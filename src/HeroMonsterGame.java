@@ -11,8 +11,9 @@ public class HeroMonsterGame extends Game{
     @Override
     public void start() {
         System.out.println("play");
-        while(true){
+        playground.printBoard();
+        // while(true){
 
-        }
+        // }
     }
 }
