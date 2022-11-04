@@ -1,3 +1,5 @@
+import java.util.function.Supplier;
+
 public class HeroMonsterGame extends Game{
 
     private Playground playground;
@@ -42,20 +44,32 @@ public class HeroMonsterGame extends Game{
                 new SquadHolder(s2, new Pos(0,0)),
         };
         this.shs = (SquadHolder[]) sh;
+        Supplier<String> getinfo = ()->this.getInfo();
+        this.io.registerShowInfo(getinfo);
+        Supplier<String> getMap = () -> this.getMap();
+        this.io.registerShowMap(getMap);
+
         this.playground = new Playground(new HeroMonsterSpaceFactory(), sh, io);
     }
     @Override
     public void start() {
         System.out.println("playing with "+ this.shs.length+" squads");
-        playground.printBoard();
+        io.showInfo(playground.showBoard());
         while(true){
             for(SquadHolder sh: shs){
                 KeyInput ki = io.getKeyInput(movementKeys);
                 playground.handleMove(ki.toMoveDir(),sh.getSquad());
-
-                playground.printBoard();
+                io.showInfo(playground.showBoard());
 
             }
         }
+    }
+
+    public String getInfo(){
+        return "current state as info";
+    }
+
+    public String getMap(){
+        return playground.showBoard();
     }
 }

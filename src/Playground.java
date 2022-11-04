@@ -1,7 +1,12 @@
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 interface IODriver {
-    KeyInput getKeyInput();
+    void registerShowInfo(Supplier<String> func);
+    void registerShowMap(Supplier<String> func);
     KeyInput getKeyInput(KeyInput[] d);
     void showInfo(String info);
+
 }
 
 interface SquadHoldable {
@@ -37,8 +42,7 @@ public class Playground {
         return null;
     }
 
-    public void printBoard(){
-        System.out.flush();
+    public String showBoard(){
         StringBuilder sb = new StringBuilder("---------------------------\n");
         for (Space[] spaces : board) {
             for (int j = 0; j < board.length; j++) {
@@ -47,8 +51,9 @@ public class Playground {
             sb.append("|\n");
         }
         sb.append("---------------------------");
-        io.showInfo(sb.toString());
+        return sb.toString();
     }
+
 
 
     // returns true if move successful, false if not, forexample running into non-accessible spaces
