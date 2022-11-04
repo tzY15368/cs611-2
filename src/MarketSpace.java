@@ -6,12 +6,12 @@ public class MarketSpace extends Space{
 
     @Override
     public String toString() {
-        return this.isOccupied?"→M":"|M";
+        return this.squads.size()!=0?"→M":"|M";
     }
 
     @Override
-    public boolean moveIn() {
-        this.isOccupied = true;
+    public boolean moveIn(Squad squad) {
+        this.squads.add(squad);
         io.showInfo("Market: welcome to the market");
         return true;
     }
@@ -23,8 +23,7 @@ public class MarketSpace extends Space{
     }
 
     @Override
-    public void moveOut() {
-        // TODO Auto-generated method stub
-        this.isOccupied = false;
+    public void moveOut(Squad squad) {
+        this.squads.remove(squad);
     }
 }

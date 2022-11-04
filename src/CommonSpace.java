@@ -6,12 +6,13 @@ public class CommonSpace extends Space{
 
     @Override
     public String toString() {
-        return this.isOccupied?"→ ":"| ";
+        return this.squads.size()!=0?"→ ":"| ";
     }
 
     @Override
-    public boolean moveIn() {
-        this.isOccupied = true;
+    public boolean moveIn(Squad squad) {
+        this.squads.add(squad);
+        io.showInfo("Common: You are in common area");
         return true;
     }
 
@@ -22,7 +23,7 @@ public class CommonSpace extends Space{
     }
 
     @Override
-    public void moveOut() {
-        this.isOccupied = false;
+    public void moveOut(Squad squad) {
+        this.squads.remove(squad);
     }
 }

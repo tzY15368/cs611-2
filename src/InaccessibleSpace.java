@@ -5,7 +5,7 @@ public class InaccessibleSpace extends Space{
     }
 
     @Override
-    public boolean moveIn() {
+    public boolean moveIn(Squad squad) {
         this.io.showInfo("Error: this place is inaccessible");
         return false;
     }
@@ -16,8 +16,8 @@ public class InaccessibleSpace extends Space{
     }
 
     @Override
-    public void moveOut() {
-        this.isOccupied = false;
+    public void moveOut(Squad squad) {
+
     }
 
     @Override

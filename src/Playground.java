@@ -4,16 +4,37 @@ interface IODriver {
     void showInfo(String info);
 }
 
+interface SquadHoldable {
+    Squad getSquad();
+    void setPos(Pos p);
+    Pos getPos();
+}
+
 public class Playground {
     private Space[][] board;
-    private Pos playerpos;
+    private SquadHoldable[] squads;
     private IODriver io;
 
-    public Playground(AbstractSpaceFactory spaceFactory, IODriver io, Pos initialPos){
+
+
+    // TODO: make squad factories
+    public Playground(AbstractSpaceFactory spaceFactory, SquadHoldable[] squads, IODriver io){
         this.board = spaceFactory.makeSpaces(io);
-        this.playerpos = initialPos;
-        this.board[playerpos.x][playerpos.y].moveIn();
+        this.squads = squads;
+        for(SquadHoldable s: this.squads){
+            // TODO: MAKE SURE POS IS VALID?
+            this.board[s.getPos().x][s.getPos().y].moveIn(s.getSquad());
+        }
         this.io = io;
+    }
+
+    private SquadHoldable getSquadHolder(Squad squad){
+        for(SquadHoldable sh:this.squads){
+            if(squad == sh.getSquad()){
+                return sh;
+            }
+        }
+        return null;
     }
 
     public void printBoard(){
@@ -31,20 +52,22 @@ public class Playground {
 
 
     // returns true if move successful, false if not, forexample running into non-accessible spaces
-    public boolean handleMove(MoveDir md){
+    public boolean handleMove(MoveDir md, Squad squad){
         Pos targetPos = null;
+        SquadHoldable sh = this.getSquadHolder(squad);
+        assert sh != null;
         switch (md) {
             case Up:
-                targetPos = new Pos(playerpos.x-1, playerpos.y);
+                targetPos = new Pos(sh.getPos().x-1, sh.getPos().y);
                 break;
             case Down:
-                targetPos = new Pos(playerpos.x+1, playerpos.y);
+                targetPos = new Pos(sh.getPos().x+1, sh.getPos().y);
                 break;
             case Left:
-                targetPos = new Pos(playerpos.x, playerpos.y-1);
+                targetPos = new Pos(sh.getPos().x, sh.getPos().y-1);
                 break;
             case Right:
-                targetPos = new Pos(playerpos.x, playerpos.y+1);
+                targetPos = new Pos(sh.getPos().x, sh.getPos().y+1);
                 break;
             default:
                 break;
@@ -55,12 +78,15 @@ public class Playground {
             return false;
         }
 
-        if(!this.board[targetPos.x][targetPos.y].moveIn()){
+        if(!this.board[targetPos.x][targetPos.y].moveIn(squad)){
             return false;
         }
-        this.board[playerpos.x][playerpos.y].moveOut();
-        this.playerpos = targetPos;
+        this.board[sh.getPos().x][sh.getPos().y].moveOut(squad);
+        sh.setPos(targetPos);
         this.board[targetPos.x][targetPos.y].handleEvent();
+
+        String msg = String.format("Playground: Squad %s moved %s to %s", squad, md, targetPos);
+        io.showInfo(msg);
         return true;
     }
 
