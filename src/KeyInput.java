@@ -32,5 +32,16 @@ public enum KeyInput implements ToMoveDir{
         public MoveDir toMoveDir(){
             return null;
         }
+    },
+    I {
+        public MoveDir toMoveDir(){
+            return null;
+        }
+    },
+    M {
+        public MoveDir toMoveDir(){
+            return null;
+        }
+
     }
 }

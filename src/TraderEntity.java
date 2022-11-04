@@ -1,9 +1,8 @@
-public class HeroEntity extends Entity{
-    private static final int defaultLvl = 8;
-    private static final int defaultHP = 100;
+public class TraderEntity extends Entity{
 
-    public HeroEntity(String name, int HP, int level) {
-        super(name, defaultHP, defaultLvl, new HeroInventoryFactory());
+
+    public TraderEntity(String name, IODriver io) {
+        super(name, 0,0, new TraderInventoryFactory(),io);
     }
 
     @Override

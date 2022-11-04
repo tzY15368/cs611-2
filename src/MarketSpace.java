@@ -1,7 +1,9 @@
 public class MarketSpace extends Space{
+    TraderEntity merchant;
 
     public MarketSpace(IODriver io) {
         super(io);
+        this.merchant = new TraderEntity("Merchant-"+this.uuid.toString(),io);
     }
 
     @Override
