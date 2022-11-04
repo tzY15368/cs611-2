@@ -1,11 +1,6 @@
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 public class HeroMonsterGame extends Game{
 
     private Playground playground;
-    private Pos initialPos = new Pos(0,0);
     private IODriver io = new TerminalIODriver();
     private SquadHolder[] shs;
     private final KeyInput[] movementKeys = new KeyInput[]{KeyInput.W, KeyInput.A, KeyInput.S, KeyInput.D};
@@ -36,7 +31,8 @@ public class HeroMonsterGame extends Game{
         }
     }
 
-    public HeroMonsterGame(){
+    public HeroMonsterGame(String configPath){
+        super(configPath);
         SquadHoldable[] sh = new SquadHolder[]{
                 new SquadHolder(new Squad("empty-squad"), new Pos(0,0)),
         };
