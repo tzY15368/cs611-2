@@ -1,5 +1,10 @@
 public abstract class Space {
     protected boolean isOccupied = false;
+    protected IODriver io;
+
+    public Space(IODriver io){
+        this.io = io;
+    }
 
     public abstract String toString();
 

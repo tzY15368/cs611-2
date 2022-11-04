@@ -1,5 +1,9 @@
 public class CommonSpace extends Space{
 
+    public CommonSpace(IODriver io) {
+        super(io);
+    }
+
     @Override
     public String toString() {
         return this.isOccupied?"→ ":"| ";
@@ -7,19 +11,18 @@ public class CommonSpace extends Space{
 
     @Override
     public boolean moveIn() {
-        // TODO Auto-generated method stub
-        return false;
+        this.isOccupied = true;
+        return true;
     }
 
     @Override
     public void handleEvent() {
         // TODO Auto-generated method stub
-        
+        io.showInfo("common stuff");
     }
 
     @Override
     public void moveOut() {
-        // TODO Auto-generated method stub
-        
+        this.isOccupied = false;
     }
 }

@@ -1,7 +1,12 @@
 public class InaccessibleSpace extends Space{
 
+    public InaccessibleSpace(IODriver io) {
+        super(io);
+    }
+
     @Override
     public boolean moveIn() {
+        this.io.showInfo("Error: this place is inaccessible");
         return false;
     }
 
@@ -12,7 +17,7 @@ public class InaccessibleSpace extends Space{
 
     @Override
     public void moveOut() {
-
+        this.isOccupied = false;
     }
 
     @Override
