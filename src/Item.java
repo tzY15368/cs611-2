@@ -1,8 +1,27 @@
-public class Item implements Cloneable{
+public abstract class Item implements Cloneable{
     private String name;
     private int requiredLevel;
     private int price;
     private int durability;
+
+    public Item(String name, int requiredLevel, int price, int durability){
+        this.name = name;
+        this.requiredLevel = requiredLevel;
+        this.price = price;
+        this.durability = durability;
+    }
+
+    public String getName(){
+        return this.name;
+    }
+
+    public int getPrice(){
+        return this.price;
+    }
+
+    public int getRequiredLevel(){
+        return this.requiredLevel;
+    }
 
     @Override
     public Item clone() {
@@ -23,7 +42,10 @@ public class Item implements Cloneable{
         return this.durability;
     }
 
-    public boolean usedBy(Entity ent){
-        return true;
+    public abstract boolean usedBy(Entity ent);
+
+    @Override
+    public String toString() {
+        return String.format("%s - %s: price:%d, level:%d, durability: %d",this.getClass(),name,price,requiredLevel,durability);
     }
 }

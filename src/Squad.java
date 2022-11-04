@@ -20,6 +20,10 @@ public class Squad {
 
     }
 
+    public List<Entity> listEntities(){
+        return this.liveEntities;
+    }
+
     public String toString(){
         return "Squad<"+this.name+">";
     }

@@ -20,8 +20,16 @@ public class MarketSpace extends Space{
 
     @Override
     public void handleEvent() {
-        io.showInfo("market stuff");
-        
+        // only talks to the latest squad in town
+        Squad squad = squads.get(squads.size()-1);
+        io.showInfo(String.format("%s: Would you like to enter market?",squad));
+        KeyInput ki = io.getKeyInput(new KeyInput[]{KeyInput.Y, KeyInput.N});
+        if(ki==KeyInput.N){
+            return;
+        }
+        for(Entity ent: squad.listEntities()){
+            ent.trade(this.merchant);
+        }
     }
 
     @Override

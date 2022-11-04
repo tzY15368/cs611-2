@@ -13,6 +13,18 @@ public class Inventory {
         this.io = io;
     }
 
+    public int getGold(){
+        return this.gold;
+    }
+
+    public Item getItemByIndex(int index){
+        return this.items.get(index);
+    }
+
+    public void setGold(int g){
+        this.gold = g;
+    }
+
     public List<Item> listItem(){
         return this.items;
     }
@@ -29,5 +41,31 @@ public class Inventory {
             this.items.remove(item);
         }
         return true;
+    }
+
+    public Item popItem(Item item){
+        if(!items.contains(item)){
+            return item;
+        }
+        this.items.remove(item);
+        return item;
+    }
+
+    public void addItem(Item item){
+        this.items.add(item);
+    }
+
+    public String toString(){
+        return String.format("<Inventory (%s)>",this.ent);
+    }
+
+    public String dumpString() {
+        StringBuilder sb = new StringBuilder("Available items:\n");
+        for(int i=0;i<this.items.size();i++){
+            sb.append("|"+(i+1));
+            sb.append("|"+this.items.get(i).toString()+"|\n");
+        }
+        sb.append("---------------------------");
+        return sb.toString();
     }
 }

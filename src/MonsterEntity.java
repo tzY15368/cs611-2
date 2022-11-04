@@ -1,11 +1,6 @@
 public class MonsterEntity extends Entity{
-    public MonsterEntity(String name, int HP, int level) {
-        super(name, HP, level, new MonsterInventoryFactory());
-    }
-
-    @Override
-    public void trade(Entity ent) {
-
+    public MonsterEntity(String name, int HP, int level, IODriver io) {
+        super(name, HP, level, new MonsterInventoryFactory(),io);
     }
 
     @Override
