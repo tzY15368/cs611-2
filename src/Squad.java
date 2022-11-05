@@ -9,19 +9,39 @@ public class Squad {
     private List<Entity> downEntities;
 
     public Squad(String name){
-        this(name, new Entity[]{});
+        this(name, new ArrayList<>());
     }
 
-    public Squad(String name, Entity[] entities){
+    public Squad(String name, List<Entity> entities){
         this.name = name;
         this.uuid = UUID.randomUUID();
-        this.liveEntities = new ArrayList<Entity>(List.of(entities));
+        this.liveEntities = entities;
         this.downEntities = new ArrayList<>();
 
     }
 
+    public int getLevel(){
+        int sum = 0;
+        for(Entity ent: liveEntities){
+            sum += ent.getLevel();
+        }
+        return sum / liveEntities.size();
+    }
+
+    public UUID getID(){
+        return this.uuid;
+    }
+
     public List<Entity> listEntities(){
         return this.liveEntities;
+    }
+
+    public void addEntity(Entity ent){
+        this.liveEntities.add(ent);
+    }
+
+    public String toDetailString(){
+        return "";
     }
 
     public String toString(){

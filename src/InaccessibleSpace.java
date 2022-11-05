@@ -11,7 +11,7 @@ public class InaccessibleSpace extends Space{
     }
 
     @Override
-    public void handleEvent() {
+    public void handleEvent(Squad squad) {
 
     }
 

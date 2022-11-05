@@ -21,6 +21,14 @@ public abstract class Entity {
         this.io = io;
     }
 
+    public int getLevel(){
+        return this.level;
+    }
+
+    public UUID getID(){
+        return this.uuid;
+    }
+
     public Inventory getInventory() {
         return this.inventory;
     }

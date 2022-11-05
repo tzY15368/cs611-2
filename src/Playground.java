@@ -88,7 +88,7 @@ public class Playground {
         }
         this.board[sh.getPos().x][sh.getPos().y].moveOut(squad);
         sh.setPos(targetPos);
-        this.board[targetPos.x][targetPos.y].handleEvent();
+        this.board[targetPos.x][targetPos.y].handleEvent(squad);
 
         String msg = String.format("Playground: Squad %s moved %s to %s", squad, md, targetPos);
         io.showInfo(msg);

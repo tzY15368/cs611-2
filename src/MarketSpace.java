@@ -1,9 +1,11 @@
 public class MarketSpace extends Space{
-    TraderEntity merchant;
+    Entity localMerchant;
 
-    public MarketSpace(IODriver io) {
-        super(io);
-        this.merchant = new TraderEntity("Merchant-"+this.uuid.toString(),io);
+    public MarketSpace(IODriver io, AbstractEntityFactory entityFactory) {
+        super(io, entityFactory);
+        Squad localSquad = new Squad("market-"+this.uuid);
+        this.entityFactory.fillSquad(localSquad);
+        this.localMerchant = localSquad.listEntities().get(0);
     }
 
     @Override
@@ -19,16 +21,15 @@ public class MarketSpace extends Space{
     }
 
     @Override
-    public void handleEvent() {
+    public void handleEvent(Squad squad) {
         // only talks to the latest squad in town
-        Squad squad = squads.get(squads.size()-1);
         io.showInfo(String.format("%s: Would you like to enter market?",squad));
         KeyInput ki = io.getKeyInput(new KeyInput[]{KeyInput.Y, KeyInput.N});
         if(ki==KeyInput.N){
             return;
         }
         for(Entity ent: squad.listEntities()){
-            ent.trade(this.merchant);
+            ent.trade(this.localMerchant);
         }
     }
 
