@@ -3,11 +3,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class ConfigLoader {
     private String configPath;
     private Map<String, List<List<String>>> data;
+
+    public Map<String, List<List<String>>> getData() {
+        return data;
+    }
 
     public ConfigLoader(String configPath){
 
@@ -21,45 +27,34 @@ public class ConfigLoader {
                 validDir = true;
             }
         }
-        System.out.println(this.data);
         if(!validDir){
             System.out.println("ConfigLoader: invalid config path");
             System.exit(-1);
         }
-//        try {
-//            for(File f:files){
-//                if(!f.isFile())continue;
-//                String fname = f.getName().replaceFirst("[.][^.]+$", "");
-//                String allData = Files.readString(f.toPath());
-//                String[] lines = allData.split("\n");
-//                String[] headers = lines[0].split("/");
-//                List<String> hdrs = new ArrayList<>(List.of(headers));
-//                System.out.println("------------"+lines[0]);
-//                System.out.println("hdrs: "+hdrs);
-//                List<List<String>> values = new ArrayList<>();
-//                values.add(hdrs);
-//                for(int i=1;i<lines.length;i++){
-//                    String[] fields = lines[i].split("\\s+");
-//                    ArrayList<String> fi = new ArrayList<>(List.of(fields));
-//                    fi.remove("All");
-//                    if(fi.size()!=headers.length){
-//                        System.out.println(headers.length);
-//                        System.out.println(fi.size());
-//                        System.out.println(Arrays.toString(headers));
-//                        System.out.println(fi);
-//                        System.out.println(String.format("bad format in file %s", fname));
-//                        break;
-//                    }
-//                    values.add(fi);
-//                }
-//                System.out.println(fname + values);
-//                this.data.put(fname, values);
-//            }
-//        } catch (IOException ioe){
-//            System.out.println("IOEXception:"+ioe);
-//            System.exit(-1);
-//        }
-//        System.out.println("~~~~~~~~~~~~~~~");
-//        System.out.println(this.data);
+        try {
+            for(File f:files){
+                if(!f.isFile())continue;
+                String fname = f.getName().replaceFirst("[.][^.]+$", "");
+                ArrayList<List<String>> allData = new ArrayList<>();
+                Stream<String> fStream = Files.lines(Path.of(f.getPath()));
+                fStream.forEach((String line)->{
+                    line = line.replace("All","");
+                    String delimiter = allData.size()==0?"/":"\\s+";
+                    List<String> fields = new ArrayList<>(List.of(line.split(delimiter)));
+                    if(allData.size()!=0 && allData.get(0).size()!= fields.size()){
+                        System.out.println("Warning: headers mismatch:\n"+"headers:"+allData.get(0) + "\ngot:"+fields);
+                        System.out.println(fname + "--------actual line:"+line);
+                        return;
+                    }
+                    allData.add(fields);
+                });
+                this.data.put(fname,allData);
+            }
+        } catch (IOException ioe){
+            System.out.println("IOEXception:"+ioe);
+            System.exit(-1);
+        }
+        System.out.println("ConfigLoader: got "+this.data.size()+" types");
+        ItemManager.registerItems(this);
     }
 }

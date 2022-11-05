@@ -1,15 +1,24 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Item implements Cloneable{
     private String name;
     private int requiredLevel;
     private int price;
     private int durability;
 
+    public Item(){
+
+    }
     public Item(String name, int requiredLevel, int price, int durability){
         this.name = name;
         this.requiredLevel = requiredLevel;
         this.price = price;
         this.durability = durability;
     }
+
+    public abstract List<Item> fromConfig(List<List<String>> cfg);
+
 
     public String getName(){
         return this.name;

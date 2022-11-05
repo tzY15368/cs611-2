@@ -6,7 +6,6 @@ public class HeroMonsterGame extends Game{
     private IODriver io = new TerminalIODriver();
     private SquadHolder[] shs;
     private final KeyInput[] movementKeys = new KeyInput[]{KeyInput.W, KeyInput.A, KeyInput.S, KeyInput.D};
-    private final KeyInput[] confirmKeys = new KeyInput[]{KeyInput.Y, KeyInput.N};
 
     private class SquadHolder implements SquadHoldable{
         private Squad squad;

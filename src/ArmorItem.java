@@ -1,9 +1,33 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class ArmorItem extends Item implements  Cloneable{
     private int dmgReduction;
 
     public ArmorItem(String name, int requiredLevel, int price, int durability, int dmgReduction) {
         super(name, requiredLevel, price, durability);
         this.dmgReduction = dmgReduction;
+    }
+
+    public ArmorItem() {
+
+    }
+
+    @Override
+    public List<Item> fromConfig(List<List<String>> cfg) {
+        List<Item> res = new ArrayList<>();
+        cfg.remove(0);
+        for(List<String> cf : cfg){
+            ArmorItem wi = new ArmorItem(
+                    cf.get(0),
+                    Integer.parseInt(cf.get(2)),
+                    Integer.parseInt(cf.get(1)),
+                    Integer.MAX_VALUE,
+                    Integer.parseInt(cf.get(3))
+            );
+            res.add(wi);
+        }
+        return res;
     }
 
     @Override
