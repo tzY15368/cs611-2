@@ -1,11 +1,13 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class HeroMonsterGame extends Game{
 
     private Playground playground;
-    private IODriver io = new TerminalIODriver();
     private SquadHolder[] shs;
     private final KeyInput[] movementKeys = new KeyInput[]{KeyInput.W, KeyInput.A, KeyInput.S, KeyInput.D};
+
 
     private class SquadHolder implements SquadHoldable{
         private Squad squad;
@@ -33,14 +35,15 @@ public class HeroMonsterGame extends Game{
     }
 
     public HeroMonsterGame(String configPath){
-        super(configPath);
-        Squad emptySquad = new Squad("empty-squad");
-        Squad s2 = new Squad("squad-test",new Entity[]{
-                new HeroEntity("hero1",999,999,io),
-                new HeroEntity("hero2",888,888,io),
-        });
+        super(configPath, new TerminalIODriver());
+        Squad squad = new Squad("Player-squad",new ArrayList<>());
+        HeroEntityFactory factory = new HeroEntityFactory(this.io);
+        factory.fillSquad(squad);
+
+        this.io.showInfo("Got heroes: \n"+squad.toDetailString());
+
         SquadHoldable[] sh = new SquadHolder[]{
-                new SquadHolder(s2, new Pos(0,0)),
+                new SquadHolder(squad, new Pos(0,0)),
         };
         this.shs = (SquadHolder[]) sh;
         Supplier<String> getinfo = ()->this.getInfo();

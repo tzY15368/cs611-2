@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import java.util.function.Supplier;
 
@@ -35,11 +36,6 @@ public class TerminalIODriver implements IODriver{
         }
     }
 
-//    @Override
-//    public KeyInput getKeyInput() {
-//        this.actualExpected = defaultExpected;
-//        return this.getActualKeyInput();
-//    }
 
     @Override
     public void registerShowInfo(Supplier<String> func) {
@@ -54,6 +50,37 @@ public class TerminalIODriver implements IODriver{
     public KeyInput getKeyInput(KeyInput[] expected){
         this.actualExpected = expected;
         return this.getActualKeyInput();
+    }
+
+    // returns menu index
+    @Override
+    public int getMenuSelection(List s) {
+        int cur = 0;
+        KeyInput[] wsyn = new KeyInput[]{KeyInput.Y, KeyInput.W, KeyInput.S, KeyInput.N};
+        showInfo("============ Menu options ===========");
+        for(int i=0;i<s.size();i++){
+            showInfo(String.format("[%d]: %s",(i+1), s.get(i)));
+        }
+        showInfo("------------------------------------");
+
+        while(true){
+            showInfo(String.format("Current selection: [%d]: %s, W for prev, S for next," +
+                    " Y for yes, N for leave menu", cur+1, s.get(cur)));
+            KeyInput ki = getKeyInput(wsyn);
+            switch (ki){
+                case Y:
+                    showInfo("You selected "+String.format("[%d]: %s",(cur+1), s.get(cur)));
+                    return cur;
+                case W:
+                    cur = Math.max(0, cur-1);
+                    break;
+                case S:
+                    cur = Math.min(cur+1, s.size()-1);
+                    break;
+                case N:
+                    return -1;
+            }
+        }
     }
 
     @Override

@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.UUID;
 
 public abstract class Entity {
@@ -7,23 +8,29 @@ public abstract class Entity {
     protected UUID uuid;
     protected Inventory inventory;
     protected IODriver io;
+    protected FightStrategy strategy;
 
     private final KeyInput[] tradeOptions = new KeyInput[]{KeyInput.W, KeyInput.S, KeyInput.Y, KeyInput.N};
 
     private final float tradeInCoefficient = 0.5F;
 
-    public Entity(String name, int HP, int level, AbstractInventoryFactory inventoryFactory, IODriver io){
+    public Entity(String name, int HP, int level, AbstractInventoryFactory inventoryFactory, IODriver io, FightStrategy strat){
         this.uuid = UUID.randomUUID();
         this.name = name;
         this.HP = HP;
         this.level = level;
-        this.inventory = inventoryFactory.makeInventory(io, this);
+        this.inventory = inventoryFactory==null?null:inventoryFactory.makeInventory(io, this);
         this.io = io;
+        this.strategy = strat;
     }
 
     public int getLevel(){
         return this.level;
     }
+
+    public abstract Entity cloneByLevel(int level);
+
+    public abstract List<Entity> fromConfig(List<List<String>> cfg, String namePrefix, IODriver io);
 
     public UUID getID(){
         return this.uuid;
@@ -43,25 +50,18 @@ public abstract class Entity {
 
     public void trade(Entity ent){
         Inventory targetInventory = ent.getInventory();
-        int cur = 0;
         io.showInfo(String.format("%s trading with %s", this.getName(), ent.getName()));
         io.showInfo("Buy phase:");
         while(true){
-            io.showInfo(String.format("%s's inventory:",ent.getName()) + targetInventory.dumpString());
             if(targetInventory.listItem().size()==0){
                 io.showInfo("Nothing is available for purchase...");
                 break;
             }
-            io.showInfo("Select the item you want to buy, W for next, S for prev, Y for buy, N to leave menu, current select: " + (cur+1));
-            KeyInput ki = io.getKeyInput(tradeOptions);
-            if(ki == KeyInput.N)break;
-            if(ki == KeyInput.W){
-                cur = Math.max(0, cur-1); continue;
+            int selection = io.getMenuSelection(targetInventory.listItem());
+            if(selection==-1){
+                break;
             }
-            if(ki == KeyInput.S){
-                cur = Math.min(targetInventory.listItem().size()-1, cur+1); continue;
-            }
-            Item targetItem = targetInventory.getItemByIndex(cur);
+            Item targetItem = targetInventory.getItemByIndex(selection);
             if(this.inventory.getGold() < targetItem.getPrice()){
                 io.showInfo("Error: you cannot purchase this item, you are too poor");
                 continue;
@@ -78,23 +78,17 @@ public abstract class Entity {
             io.showInfo(String.format("Trade: %s bought %s from %s for %d gold",this.name, targetItem.getName(),ent.name, targetItem.getPrice()));
         }
         io.showInfo("Sell phase:");
-        cur = 0;
         while(true){
-            io.showInfo("My inventory: " + targetInventory.dumpString());
+            //io.showInfo("My inventory: " + this.inventory.dumpString());
             if(this.inventory.listItem().size()==0){
                 io.showInfo("Nothing is available for sale...");
                 break;
             }
-            io.showInfo("Select the item you want to sell, W for next, S for prev, Y for buy, N to leave menu, current select: " + (cur+1));
-            KeyInput ki = io.getKeyInput(tradeOptions);
-            if(ki == KeyInput.N)break;
-            if(ki == KeyInput.W){
-                cur = Math.max(0, cur-1); continue;
-            }
-            if(ki == KeyInput.S){
-                cur = Math.min(targetInventory.listItem().size()-1, cur+1); continue;
-            }
-            Item targetItem = targetInventory.getItemByIndex(cur);
+            io.showInfo("My inventory:");
+            int selection = io.getMenuSelection(inventory.listItem());
+            if(selection==-1)break;
+
+            Item targetItem = targetInventory.getItemByIndex(selection);
             ent.inventory.addItem(targetItem);
             this.inventory.popItem(targetItem);
             int actualPrice = (int) (targetItem.getPrice() * tradeInCoefficient);
@@ -112,6 +106,6 @@ public abstract class Entity {
     public abstract void revive();
 
     public String toString(){
-        return "<"+this.getClass()+">";
+        return String.format("%s (lv%d) (HP=%d)",this.name, this.level, this.getHP());
     }
 }

@@ -1,7 +1,5 @@
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -10,14 +8,16 @@ import java.util.stream.Stream;
 public class ConfigLoader {
     private String configPath;
     private Map<String, List<List<String>>> data;
+    private IODriver io;
 
     public Map<String, List<List<String>>> getData() {
         return data;
     }
 
-    public ConfigLoader(String configPath){
+    public ConfigLoader(String configPath, IODriver io){
 
         this.configPath = configPath;
+        this.io = io;
         this.data = new HashMap<>();
         File file = new File(configPath);
         File[] files = file.listFiles();
@@ -56,5 +56,6 @@ public class ConfigLoader {
         }
         System.out.println("ConfigLoader: got "+this.data.size()+" types");
         ItemManager.registerItems(this);
+        EntityManager.registerEntities(this, io);
     }
 }

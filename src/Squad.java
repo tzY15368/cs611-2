@@ -41,7 +41,18 @@ public class Squad {
     }
 
     public String toDetailString(){
-        return "";
+        StringBuilder sb = new StringBuilder();
+        sb.append("Alive:\n");
+        for(Entity ent : this.listEntities()){
+            sb.append(ent.toString() + "\n");
+        }
+        if(this.downEntities.size()!=0){
+            sb.append("Down:\n");
+            for(Entity ent : this.downEntities){
+                sb.append(ent.toString() + "\n");
+            }
+        }
+        return this.toString() + sb;
     }
 
     public String toString(){

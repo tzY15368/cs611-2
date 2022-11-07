@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -5,8 +6,8 @@ interface IODriver {
     void registerShowInfo(Supplier<String> func);
     void registerShowMap(Supplier<String> func);
     KeyInput getKeyInput(KeyInput[] d);
+    int getMenuSelection(List s);
     void showInfo(String info);
-
 }
 
 interface SquadHoldable {

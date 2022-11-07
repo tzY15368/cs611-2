@@ -1,5 +1,3 @@
-import java.util.List;
-
 public class TraderEntityFactory extends AbstractEntityFactory{
     public TraderEntityFactory(IODriver ioDriver) {
         super(ioDriver);

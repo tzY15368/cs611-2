@@ -21,7 +21,7 @@ public class PotionItem extends Item implements Cloneable{
                     cf.get(0),
                     Integer.parseInt(cf.get(2)),
                     Integer.parseInt(cf.get(1)),
-                    Integer.MAX_VALUE,
+                    1,
                     Integer.parseInt(cf.get(3)),
                     (cf.get(4))
             );

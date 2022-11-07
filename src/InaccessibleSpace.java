@@ -1,7 +1,7 @@
 public class InaccessibleSpace extends Space{
 
-    public InaccessibleSpace(IODriver io) {
-        super(io);
+    public InaccessibleSpace(IODriver io, AbstractEntityFactory abs) {
+        super(io, abs);
     }
 
     @Override

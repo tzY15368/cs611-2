@@ -1,7 +1,9 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MonsterEntityFactory extends AbstractEntityFactory{
+    private int monsterPossibility = 50;
     public MonsterEntityFactory(IODriver ioDriver) {
         super(ioDriver);
     }
@@ -10,12 +12,20 @@ public class MonsterEntityFactory extends AbstractEntityFactory{
     @Override
     public Squad fillWithSquad(Squad squad) {
         // takes the hero squad and returns a NEW SQUAD of monsters
-        int monsterCount = squad.listEntities().size();
         List<Entity> monsterList = new ArrayList<>();
-        for(int i=0;i<monsterCount;i++){
-
-        }
         Squad monsterSquad = new Squad("MonsterSquad", monsterList);
+        Random r = new Random();
+        if(r.nextInt(100) > this.monsterPossibility){
+            return monsterSquad;
+        }
+        int monsterCount = squad.listEntities().size();
+        int monsterLevel = squad.getLevel();
+        List<Entity> monsters = EntityManager.listMonsters();
+        for(int i=0;i<monsterCount;i++){
+            // TODO: MAKE MONSTERS
+            Entity monster = monsters.get(r.nextInt(monsters.size()));
+            monsterList.add(monster.cloneByLevel(monsterLevel));
+        }
         return monsterSquad;
     }
 
