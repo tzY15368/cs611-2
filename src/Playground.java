@@ -6,7 +6,7 @@ interface IODriver {
     void registerShowInfo(Supplier<String> func);
     void registerShowMap(Supplier<String> func);
     KeyInput getKeyInput(KeyInput[] d);
-    int getMenuSelection(List s);
+    int getMenuSelection(List s, boolean must);
     void showInfo(String info);
 }
 

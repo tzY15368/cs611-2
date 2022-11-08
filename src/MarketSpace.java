@@ -1,9 +1,11 @@
+import java.util.ArrayList;
+
 public class MarketSpace extends Space{
     Entity localMerchant;
 
     public MarketSpace(IODriver io, AbstractEntityFactory entityFactory) {
         super(io, entityFactory);
-        Squad localSquad = new Squad("market-"+this.uuid);
+        Squad localSquad = new Squad("market-"+this.uuid,new ArrayList<>(), io, null);
         this.entityFactory.fillSquad(localSquad);
         this.localMerchant = localSquad.listEntities().get(0);
     }
@@ -20,9 +22,10 @@ public class MarketSpace extends Space{
         return true;
     }
 
+
+
     @Override
     public void handleEvent(Squad squad) {
-        // only talks to the latest squad in town
         io.showInfo(String.format("%s: Would you like to enter market?",squad));
         KeyInput ki = io.getKeyInput(new KeyInput[]{KeyInput.Y, KeyInput.N});
         if(ki==KeyInput.N){

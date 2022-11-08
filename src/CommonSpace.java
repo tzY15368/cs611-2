@@ -31,13 +31,12 @@ public class CommonSpace extends Space{
             return;
         }
         io.showInfo("There's monsters in this space:\n"+monsters.toDetailString());
-
+        squad.fight(monsters);
     }
 
     @Override
     public void moveOut(Squad squad) {
         this.squads.remove(squad);
     }
-
 
 }

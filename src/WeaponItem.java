@@ -4,7 +4,7 @@ import java.util.ListIterator;
 
 public class WeaponItem extends Item implements Cloneable{
     private int requiredHands;
-    private int damage;
+    public int damage;
 
     public WeaponItem(String name, int requiredLevel, int price, int durability, int requiredHands, int damage) {
         super(name, requiredLevel, price, durability);

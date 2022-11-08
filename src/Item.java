@@ -20,6 +20,10 @@ public abstract class Item implements Cloneable{
     public abstract List<Item> fromConfig(List<List<String>> cfg);
 
 
+    public void setDurability(int durability) {
+        this.durability = durability;
+    }
+
     public String getName(){
         return this.name;
     }

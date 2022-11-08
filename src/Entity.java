@@ -1,5 +1,14 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
+enum EntityAction{
+    Attack,
+    CastSpell,
+    UsePotion,
+    Equip
+}
 
 public abstract class Entity {
     protected int level;
@@ -8,13 +17,10 @@ public abstract class Entity {
     protected UUID uuid;
     protected Inventory inventory;
     protected IODriver io;
-    protected FightStrategy strategy;
+    protected AbstractFightStrategy strategy;
+    protected int experience;
 
-    private final KeyInput[] tradeOptions = new KeyInput[]{KeyInput.W, KeyInput.S, KeyInput.Y, KeyInput.N};
-
-    private final float tradeInCoefficient = 0.5F;
-
-    public Entity(String name, int HP, int level, AbstractInventoryFactory inventoryFactory, IODriver io, FightStrategy strat){
+    public Entity(String name, int HP, int level, AbstractInventoryFactory inventoryFactory, IODriver io, AbstractFightStrategy strat){
         this.uuid = UUID.randomUUID();
         this.name = name;
         this.HP = HP;
@@ -22,7 +28,28 @@ public abstract class Entity {
         this.inventory = inventoryFactory==null?null:inventoryFactory.makeInventory(io, this);
         this.io = io;
         this.strategy = strat;
+        this.experience = level * Constants.HERO_EXP_PER_LVL;
     }
+
+    public boolean isDead(){
+        return this.HP <=0;
+    }
+
+    // return new level
+    public int gainExp(int newExp){
+        this.experience += newExp;
+        int oldLevel = this.level;
+        int newLevel = this.experience / Constants.HERO_EXP_PER_LVL;
+        if(newLevel != this.level){
+            this.handleLevelUp(this.level, newLevel);
+            this.level = newLevel;
+        }
+        // gain more activeitem slots
+        getInventory().scaleActiveList(newLevel/oldLevel);
+        return this.level;
+    }
+
+    public abstract void handleLevelUp(int old, int newLvl);
 
     public int getLevel(){
         return this.level;
@@ -57,7 +84,7 @@ public abstract class Entity {
                 io.showInfo("Nothing is available for purchase...");
                 break;
             }
-            int selection = io.getMenuSelection(targetInventory.listItem());
+            int selection = io.getMenuSelection(targetInventory.listItem(),false);
             if(selection==-1){
                 break;
             }
@@ -85,24 +112,104 @@ public abstract class Entity {
                 break;
             }
             io.showInfo("My inventory:");
-            int selection = io.getMenuSelection(inventory.listItem());
+            int selection = io.getMenuSelection(inventory.listItem(),false);
             if(selection==-1)break;
 
             Item targetItem = targetInventory.getItemByIndex(selection);
             ent.inventory.addItem(targetItem);
             this.inventory.popItem(targetItem);
-            int actualPrice = (int) (targetItem.getPrice() * tradeInCoefficient);
+            int actualPrice = (int) (targetItem.getPrice() * Constants.TRADEIN_COEFFICIENT);
             this.inventory.setGold(this.inventory.getGold() + actualPrice);
             ent.inventory.setGold(this.inventory.getGold() - actualPrice);
         }
     };
 
-    // mana dmg?
-    public abstract void takeDamage(int damage);
+    public abstract int getActualDamage(int damage);
 
-    public abstract void fight(Entity ent);
+    public void handleDamage(int damage){
+        int delta = getActualDamage(damage);
+        io.showInfo(String.format("%s actually took %d damage", this, delta));
+        this.HP -= delta;
+    };
 
-    protected abstract void die();
+    // returns actual damage
+    public abstract int createDamage();
+
+    public void useDamage(Entity ent){
+        int dmg = createDamage();
+        io.showInfo(String.format("%s dealt %d damage to %s",this,dmg, ent));
+        ent.handleDamage(dmg);
+    }
+
+    public void doFight(Entity ent){
+        io.showInfo(String.format("EntityFight: %s is fighting %s",this, ent));
+        this.fight(ent);
+        ent.fight(this);
+    }
+    public abstract void handleSpellUse(SpellItem spell, Entity ent);
+    public abstract void handleSpellEffect(SpellItem spell);
+
+    private void useSpell(Entity ent){
+        List<SpellItem> spellOpts = new ArrayList<>();
+        for(Item item : this.inventory.listItem()){
+            if(item instanceof SpellItem){
+                spellOpts.add((SpellItem) item);
+            }
+        }
+        int selection = io.getMenuSelection(spellOpts,false);
+        if(selection==-1){
+            io.showInfo("Potion use is aborted");
+            return;
+        }
+        SpellItem item = spellOpts.get(selection);
+        boolean ok = this.inventory.useItem(item);
+        if(!ok)return;
+        this.handleSpellUse(item, ent);
+        io.showInfo(String.format("%s used %s, dealt %d damage and reduced %s's %s",
+                this,item,item.getDamage(),ent,item.getAffectedAttr()));
+    }
+
+    public abstract void handlePotionUse(PotionItem potion);
+
+    private void usePotion(){
+        List<PotionItem> potionOpts = new ArrayList<>();
+        for(Item item : this.inventory.listItem()){
+            if(item instanceof PotionItem){
+                potionOpts.add((PotionItem) item);
+            }
+        }
+        int selection = io.getMenuSelection(potionOpts,false);
+        if(selection==-1){
+            io.showInfo("Potion use is aborted");
+            return;
+        }
+        PotionItem targetPotion = potionOpts.get(selection);
+        boolean ok = this.inventory.useItem(targetPotion);
+        if(!ok)return;
+        this.handlePotionUse(targetPotion);
+        io.showInfo(String.format("%s used %s and gained %d in %s", this,
+                targetPotion, targetPotion.getAttrIncrease(), Arrays.toString(targetPotion.getAttrAffected())));
+    }
+
+    public void fight(Entity ent){
+        io.showInfo(this+"'s move:");
+        EntityAction ea = strategy.useStrategy(this);
+        switch (ea){
+            case Equip:
+                this.inventory.replaceActiveItem();
+                break;
+            case Attack:
+                this.useDamage(ent);
+                break;
+            case CastSpell:
+                this.useSpell(ent);
+                break;
+            case UsePotion:
+                this.usePotion();
+                break;
+        }
+    }
+
     public abstract void revive();
 
     public String toString(){

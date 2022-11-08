@@ -5,7 +5,12 @@ public class TraderEntity extends Entity{
 
     public TraderEntity(String name, IODriver io) {
 
-        super(name, 0,0, new TraderInventoryFactory(),io, new TraderFightStrategy());
+        super(name, 0,0, new TraderInventoryFactory(),io, new TraderFightStrategy(io));
+    }
+
+    @Override
+    public void handleLevelUp(int old, int newLvl) {
+
     }
 
     @Override
@@ -19,17 +24,32 @@ public class TraderEntity extends Entity{
     }
 
     @Override
-    public void takeDamage(int damage) {
+    public int getActualDamage(int damage) {
+        return 0;
+    }
+
+    @Override
+    public int createDamage() {
+        return 0;
+    }
+
+    @Override
+    public void handleSpellUse(SpellItem spell, Entity ent) {
+
+    }
+
+    @Override
+    public void handleSpellEffect(SpellItem spell) {
+
+    }
+
+    @Override
+    public void handlePotionUse(PotionItem potion) {
 
     }
 
     @Override
     public void fight(Entity ent) {
-
-    }
-
-    @Override
-    protected void die() {
 
     }
 

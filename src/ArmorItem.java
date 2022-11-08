@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArmorItem extends Item implements  Cloneable{
-    private int dmgReduction;
+    public int dmgReduction;
 
     public ArmorItem(String name, int requiredLevel, int price, int durability, int dmgReduction) {
         super(name, requiredLevel, price, durability);

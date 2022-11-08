@@ -34,6 +34,14 @@ public class PotionItem extends Item implements Cloneable{
 
     }
 
+    public int getAttrIncrease(){
+        return this.attrIncrease;
+    }
+
+    public String[] getAttrAffected(){
+        return this.attrAffected;
+    }
+
     @Override
     public PotionItem clone() {
          PotionItem c = (PotionItem) super.clone();

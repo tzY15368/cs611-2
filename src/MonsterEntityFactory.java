@@ -13,7 +13,7 @@ public class MonsterEntityFactory extends AbstractEntityFactory{
     public Squad fillWithSquad(Squad squad) {
         // takes the hero squad and returns a NEW SQUAD of monsters
         List<Entity> monsterList = new ArrayList<>();
-        Squad monsterSquad = new Squad("MonsterSquad", monsterList);
+        Squad monsterSquad = new Squad("MonsterSquad", monsterList,ioDriver,new OneByOneFightTurnStrategy(ioDriver));
         Random r = new Random();
         if(r.nextInt(100) > this.monsterPossibility){
             return monsterSquad;

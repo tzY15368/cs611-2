@@ -36,8 +36,8 @@ public class HeroMonsterGame extends Game{
 
     public HeroMonsterGame(String configPath){
         super(configPath, new TerminalIODriver());
-        Squad squad = new Squad("Player-squad",new ArrayList<>());
-        HeroEntityFactory factory = new HeroEntityFactory(this.io);
+        Squad squad = new Squad("Player-squad",new ArrayList<>(),io, new AllToAllFightTurnStrategy(io));
+        HeroEntityFactory factory = new HeroEntityFactory(io);
         factory.fillSquad(squad);
 
         this.io.showInfo("Got heroes: \n"+squad.toDetailString());

@@ -54,7 +54,7 @@ public class TerminalIODriver implements IODriver{
 
     // returns menu index
     @Override
-    public int getMenuSelection(List s) {
+    public int getMenuSelection(List s, boolean must) {
         int cur = 0;
         KeyInput[] wsyn = new KeyInput[]{KeyInput.Y, KeyInput.W, KeyInput.S, KeyInput.N};
         showInfo("============ Menu options ===========");
@@ -65,7 +65,7 @@ public class TerminalIODriver implements IODriver{
 
         while(true){
             showInfo(String.format("Current selection: [%d]: %s, W for prev, S for next," +
-                    " Y for yes, N for leave menu", cur+1, s.get(cur)));
+                    " Y for yes"+(must?"":" N for leave menu"), cur+1, s.get(cur)));
             KeyInput ki = getKeyInput(wsyn);
             switch (ki){
                 case Y:
@@ -78,7 +78,7 @@ public class TerminalIODriver implements IODriver{
                     cur = Math.min(cur+1, s.size()-1);
                     break;
                 case N:
-                    return -1;
+                    if(!must)return -1;
             }
         }
     }

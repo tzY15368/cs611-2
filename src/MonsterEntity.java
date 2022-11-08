@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MonsterEntity extends Entity{
     private int defense;
@@ -15,10 +16,15 @@ public class MonsterEntity extends Entity{
     }
 
     public MonsterEntity(String name, int level, int defense, int damage, int dodge, String namePrefix, IODriver io) {
-        super(namePrefix + name, MonsterEntity.getInitialHP(level), level, new MonsterInventoryFactory(),io, new MonsterFightStrategy());
+        super(namePrefix + name, MonsterEntity.getInitialHP(level), level, new MonsterInventoryFactory(),io, new MonsterFightStrategy(io));
         this.defense = defense;
         this.damage = damage;
         this.dodge = dodge;
+    }
+
+    @Override
+    public void handleLevelUp(int old, int newLvl) {
+
     }
 
     public MonsterEntity cloneByLevel(int targetLevel){
@@ -53,17 +59,38 @@ public class MonsterEntity extends Entity{
     }
 
     @Override
-    public void takeDamage(int damage) {
+    public int getActualDamage(int damage) {
+        if(new Random().nextInt(100) < (float) this.dodge * 0.01){
+            io.showInfo(String.format("%s dodged attack!", this));
+            return 0;
+        }
+        return damage-this.defense;
+    }
+
+    @Override
+    public int createDamage() {
+        return this.damage;
+    }
+
+    @Override
+    public void handleSpellUse(SpellItem spell, Entity ent) {
 
     }
 
     @Override
-    public void fight(Entity ent) {
-
+    public void handleSpellEffect(SpellItem spell) {
+        switch (spell.getAffectedAttr().toLowerCase()){
+            case "damage":
+                this.damage = (int) (damage * Constants.SPELL_EFFECT_COEFFICIENT);
+            case "defense":
+                this.defense = (int) (defense * Constants.SPELL_EFFECT_COEFFICIENT);
+            case "dodge":
+                this.dodge = (int) (dodge * Constants.SPELL_EFFECT_COEFFICIENT);
+        }
     }
 
     @Override
-    protected void die() {
+    public void handlePotionUse(PotionItem potion) {
 
     }
 

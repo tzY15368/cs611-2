@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class SpellItem extends Item implements Cloneable{
     private int damage;
@@ -11,6 +12,23 @@ public class SpellItem extends Item implements Cloneable{
         this.manaCost = manaCost;
     }
 
+    public int getDamage(){
+        return damage;
+    }
+
+    public String getAffectedAttr(){
+        if(this.getName().toLowerCase().contains("ice")){
+            return "damage";
+        }
+        if(this.getName().toLowerCase().contains("fire")){
+            return "defense";
+        }
+        if(this.getName().toLowerCase().contains("lightning")){
+            return "dodge";
+        }
+        return null;
+    }
+
     @Override
     public List<Item> fromConfig(List<List<String>> cfg) {
         List<Item> res = new ArrayList<>();
@@ -20,7 +38,7 @@ public class SpellItem extends Item implements Cloneable{
                     cf.get(0),
                     Integer.parseInt(cf.get(2)),
                     Integer.parseInt(cf.get(1)),
-                    Integer.MAX_VALUE,
+                    new Random().nextInt(3),
                     Integer.parseInt(cf.get(3)),
                     Integer.parseInt(cf.get(4))
             );
