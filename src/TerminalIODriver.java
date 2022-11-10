@@ -13,8 +13,8 @@ public class TerminalIODriver implements IODriver{
 
     private KeyInput getActualKeyInput(){
         String msg = "Expected input: "+ Arrays.toString(actualExpected) +", or : Q for exit, I for info, and M for map";
-        System.out.println(msg);
         while(true) {
+            System.out.println(msg);
             Scanner s = new Scanner(System.in);
             String key = s.nextLine().strip().toUpperCase();
             if (key.equals("Q")) {

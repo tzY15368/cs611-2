@@ -5,6 +5,7 @@ public abstract class AbstractFightTurnStrategy{
 
     public AbstractFightTurnStrategy(IODriver io){
         this.io = io;
+        io.showInfo("Fight turn strategy: "+this.getClass().getName());
     }
 
     public abstract Iterator<Pair> useStrategy(Squad s1, Squad s2);

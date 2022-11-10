@@ -6,6 +6,7 @@ public class HeroMonsterGame extends Game{
 
     private Playground playground;
     private SquadHolder[] shs;
+    private Squad playerSquad;
     private final KeyInput[] movementKeys = new KeyInput[]{KeyInput.W, KeyInput.A, KeyInput.S, KeyInput.D};
 
 
@@ -36,7 +37,12 @@ public class HeroMonsterGame extends Game{
 
     public HeroMonsterGame(String configPath){
         super(configPath, new TerminalIODriver());
+        Supplier<String> getinfo = ()->this.getInfo();
+        this.io.registerShowInfo(getinfo);
+        Supplier<String> getMap = () -> this.getMap();
+        this.io.registerShowMap(getMap);
         Squad squad = new Squad("Player-squad",new ArrayList<>(),io, new AllToAllFightTurnStrategy(io));
+        this.playerSquad = squad;
         HeroEntityFactory factory = new HeroEntityFactory(io);
         factory.fillSquad(squad);
 
@@ -46,10 +52,6 @@ public class HeroMonsterGame extends Game{
                 new SquadHolder(squad, new Pos(0,0)),
         };
         this.shs = (SquadHolder[]) sh;
-        Supplier<String> getinfo = ()->this.getInfo();
-        this.io.registerShowInfo(getinfo);
-        Supplier<String> getMap = () -> this.getMap();
-        this.io.registerShowMap(getMap);
 
         this.playground = new Playground(new HeroMonsterSpaceFactory(), sh, io);
     }
@@ -68,10 +70,21 @@ public class HeroMonsterGame extends Game{
     }
 
     public String getInfo(){
-        return "current state as info";
+        if(this.playerSquad==null){
+            return "Game hasn't started yet!\n";
+        }
+        String status = this.playerSquad.toDetailString();
+        Squad opponent = playerSquad.getCurrentOpponent();
+        if(opponent!=null){
+            status += "\nOpponent:\n" + opponent.toDetailString();
+        }
+        return status;
     }
 
     public String getMap(){
+        if(this.playground==null){
+            return "Game hasn't started yet!\n";
+        }
         return playground.showBoard();
     }
 }

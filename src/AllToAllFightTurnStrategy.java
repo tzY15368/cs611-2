@@ -19,7 +19,7 @@ public class AllToAllFightTurnStrategy extends AbstractFightTurnStrategy{
 
         @Override
         public boolean hasNext() {
-            return s1Idx == s1.listEntities().size();
+            return s1Idx != s1.listEntities().size();
         }
 
         @Override

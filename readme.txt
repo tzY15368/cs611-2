@@ -16,9 +16,9 @@ U79759599
 
 ----
 
-1. `unzip cs611 && cd cs611/assignment1`
+1. `unzip cs611 && cd cs611`
 2. `javac -d ./bin *.java`
-3. `java -cp ./bin Main`
+3. `java -cp ./bin Main --config PATH_TO_CONFIG`
 
 ## design specific document
 
@@ -47,7 +47,7 @@ A singleton that holdes a single copy of all the parsed Entity instances read fr
 A singleton that holdes a single copy of all the parsed Item instances read from ConfigLoader
 
 - ConfigLoader
-Hard-coding the entity & item specifications does not make sense as it makes the game non-extendable. The game starts, parses commandline arguments and initiates the Configloader with the config path. The ConfigLoader does NOT create the instaces on its own, instead only holding data in a hashmap then asking both entityManager and itemManager to try their best to create instances with valid formatted config data.
+Hard-coding the entity & item specifications does not make sense as it makes the game non-configurable at all. The game starts, parses commandline arguments and initiates the Configloader with the config path. The ConfigLoader does NOT create the instaces on its own, instead only holding data in a hashmap then asking both entityManager and itemManager to try their best to create instances with valid formatted config data.
 
 - Playground
 Holds the player positions with reference to the space[][] created by the Spacefactory. Also handles player movements on the game-board and validates player moves.

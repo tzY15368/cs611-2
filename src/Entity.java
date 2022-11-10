@@ -144,7 +144,6 @@ public abstract class Entity {
     public void doFight(Entity ent){
         io.showInfo(String.format("EntityFight: %s is fighting %s",this, ent));
         this.fight(ent);
-        ent.fight(this);
     }
     public abstract void handleSpellUse(SpellItem spell, Entity ent);
     public abstract void handleSpellEffect(SpellItem spell);
