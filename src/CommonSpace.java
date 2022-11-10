@@ -26,6 +26,7 @@ public class CommonSpace extends Space{
     public void handleEvent(Squad squad) {
         io.showInfo("You are in common space");
         this.monsters = this.entityFactory.fillWithSquad(squad);
+        // let factory create monsters if necessary
         if(this.monsters.listEntities().size()==0){
             io.showInfo("Good news, there's no monsters here");
             return;

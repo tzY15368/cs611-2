@@ -32,7 +32,7 @@ public class AllToAllFightTurnStrategy extends AbstractFightTurnStrategy{
             return new Pair(e1,e2);
         }
     }
-
+    
     public AllToAllFightTurnStrategy(IODriver io){
         super(io);
     }

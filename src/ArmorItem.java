@@ -4,6 +4,8 @@ import java.util.List;
 public class ArmorItem extends Item implements  Cloneable{
     public int dmgReduction;
 
+
+    // craete armor item
     public ArmorItem(String name, int requiredLevel, int price, int durability, int dmgReduction) {
         super(name, requiredLevel, price, durability);
         this.dmgReduction = dmgReduction;
