@@ -75,20 +75,23 @@ public class Squad {
 
     public void fight(Squad targetSquad){
         io.showInfo(String.format("%s is fighting %s!", this, targetSquad));
-        Iterator<Pair> pairs = this.fightTurnStrategy.useStrategy(this, targetSquad);
-        while(pairs.hasNext()){
-            Pair item = pairs.next();
-            item.first.doFight(item.second);
-            for(Entity ent : this.liveEntities){
-                if(ent.isDead()){
-                    this.liveEntities.remove(ent);
-                    this.downEntities.add(ent);
+        while(!(this.isWiped()||targetSquad.isWiped())){
+            io.showInfo("No squad is dead yet, keep fighting.");
+            Iterator<Pair> pairs = this.fightTurnStrategy.useStrategy(this, targetSquad);
+            while(pairs.hasNext()){
+                Pair item = pairs.next();
+                item.first.doFight(item.second);
+                for(Entity ent : this.liveEntities){
+                    if(ent.isDead()){
+                        this.liveEntities.remove(ent);
+                        this.downEntities.add(ent);
+                    }
                 }
-            }
-            for(Entity ent : targetSquad.liveEntities){
-                if(ent.isDead()){
-                    targetSquad.liveEntities.remove(ent);
-                    targetSquad.downEntities.add(ent);
+                for(Entity ent : targetSquad.liveEntities){
+                    if(ent.isDead()){
+                        targetSquad.liveEntities.remove(ent);
+                        targetSquad.downEntities.add(ent);
+                    }
                 }
             }
         }
