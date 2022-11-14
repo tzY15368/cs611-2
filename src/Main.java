@@ -14,7 +14,7 @@ class Main {
             System.out.println("Usage: add `--config <CONFIGPATH>` to command line argument");
             System.exit(-1);
         }
-        Game game = new HeroMonsterGame(configPath);
+        Game game = new ValorGame(configPath);
         game.start();
     }
 }

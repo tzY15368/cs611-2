@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+
+
 public class HeroMonsterGame extends Game{
 
     private Playground playground;
@@ -9,31 +11,6 @@ public class HeroMonsterGame extends Game{
     private Squad playerSquad;
     private final KeyInput[] movementKeys = new KeyInput[]{KeyInput.W, KeyInput.A, KeyInput.S, KeyInput.D};
 
-
-    private class SquadHolder implements SquadHoldable{
-        private Squad squad;
-        private Pos pos;
-
-        public SquadHolder(Squad s, Pos p){
-            squad = s;
-            pos = p;
-        }
-
-        @Override
-        public Squad getSquad() {
-            return this.squad;
-        }
-
-        @Override
-        public void setPos(Pos p) {
-            this.pos = p;
-        }
-
-        @Override
-        public Pos getPos() {
-            return this.pos;
-        }
-    }
 
     public HeroMonsterGame(String configPath){
         super(configPath, new TerminalIODriver());
@@ -43,6 +20,8 @@ public class HeroMonsterGame extends Game{
         this.io.registerShowMap(getMap);
         Squad squad = new Squad("Player-squad",new ArrayList<>(),io, new AllToAllFightTurnStrategy(io));
         this.playerSquad = squad;
+
+
         HeroEntityFactory factory = new HeroEntityFactory(io);
         factory.fillSquad(squad);
 

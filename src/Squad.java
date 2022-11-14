@@ -30,6 +30,9 @@ public class Squad {
         this.io = io;
         this.fightTurnStrategy = fightTurnStrategy;
     }
+    public Class<?> getEntityType(){
+        return this.liveEntities.get(0).getClass();
+    }
 
     public int getLevel(){
         int sum = 0;

@@ -6,6 +6,7 @@ public class MarketSpace extends Space{
     public MarketSpace(IODriver io, AbstractEntityFactory entityFactory) {
         super(io, entityFactory);
         Squad localSquad = new Squad("market-"+this.uuid,new ArrayList<>(), io, null);
+        io.showInfo("market: got local factory"+this.entityFactory.getClass());
         this.entityFactory.fillSquad(localSquad);
         this.localMerchant = localSquad.listEntities().get(0);
     }

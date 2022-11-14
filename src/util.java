@@ -12,3 +12,28 @@ class Pos {
         return ("(" + x + ", "+y+")");
     }
 }
+
+class SquadHolder implements SquadHoldable{
+    private Squad squad;
+    private Pos pos;
+
+    public SquadHolder(Squad s, Pos p){
+        squad = s;
+        pos = p;
+    }
+
+    @Override
+    public Squad getSquad() {
+        return this.squad;
+    }
+
+    @Override
+    public void setPos(Pos p) {
+        this.pos = p;
+    }
+
+    @Override
+    public Pos getPos() {
+        return this.pos;
+    }
+}

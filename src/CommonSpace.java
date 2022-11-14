@@ -4,7 +4,6 @@ import java.util.Random;
 public class CommonSpace extends Space{
 
     private Squad monsters;
-    private KeyInput[] confirmKeys = new KeyInput[]{KeyInput.Y, KeyInput.N};
 
     public CommonSpace(IODriver io, AbstractEntityFactory entityFactory) {
         super(io, entityFactory);
@@ -12,13 +11,13 @@ public class CommonSpace extends Space{
 
     @Override
     public String toString() {
-        return this.squads.size()!=0?"→ ":"| ";
+        return this.squads.size()!=0?"|H":"| ";
     }
 
     @Override
     public boolean moveIn(Squad squad) {
         this.squads.add(squad);
-        io.showInfo("Common: You are in common area");
+        io.showInfo(String.format("Common: %s entered common area",squad));
         return true;
     }
 

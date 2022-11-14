@@ -22,6 +22,6 @@ public class InaccessibleSpace extends Space{
 
     @Override
     public String toString() {
-        return "|X";
+        return "|XX";
     }
 }
