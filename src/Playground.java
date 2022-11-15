@@ -1,5 +1,4 @@
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 interface IODriver {
@@ -71,8 +70,46 @@ public class Playground {
         return sb.toString();
     }
 
+    public Space[] getSpaceByRow(int rowIndex){
+        return this.board[(rowIndex+this.board.length) % this.board.length];
+    }
+
+    public Pos checkNewPos(Pos oldPos, MoveDir md){
+        Pos targetPos = null;
+        switch (md) {
+            case Up:
+                targetPos = new Pos(oldPos.x-1, oldPos.y);
+                break;
+            case Down:
+                targetPos = new Pos(oldPos.x+1, oldPos.y);
+                break;
+            case Left:
+                targetPos = new Pos(oldPos.x, oldPos.y-1);
+                break;
+            case Right:
+                targetPos = new Pos(oldPos.x, oldPos.y+1);
+                break;
+            default:
+                break;
+        }
+        if(targetPos.x >= this.board.length || targetPos.y >= this.board[0].length || targetPos.x <0 || targetPos.y < 0){
+            io.showInfo("Error: out of playground bounds");
+            return null;
+        }
+        return targetPos;
+    }
+
     public boolean handleEntityMove(MoveDir md, Entity ent){
-        return false;
+        Pos oldPos = ent.getPos();
+        Pos newPos = this.checkNewPos(oldPos,md);
+        if(newPos==null)return false;
+        if(!board[newPos.x][newPos.y].moveIn(ent)){
+            return false;
+        }
+        board[oldPos.x][oldPos.y].moveOut(ent);
+        ent.setPos(newPos);
+        io.showInfo("Playground: Entity"+String.format(" %s moved %s to %s",ent,md, newPos));
+        return true;
     }
 
     // returns true if move successful, false if not, forexample running into non-accessible spaces
@@ -80,27 +117,9 @@ public class Playground {
         Pos targetPos = null;
         SquadHoldable sh = this.getSquadHolder(squad);
         assert sh != null;
-        switch (md) {
-            case Up:
-                targetPos = new Pos(sh.getPos().x-1, sh.getPos().y);
-                break;
-            case Down:
-                targetPos = new Pos(sh.getPos().x+1, sh.getPos().y);
-                break;
-            case Left:
-                targetPos = new Pos(sh.getPos().x, sh.getPos().y-1);
-                break;
-            case Right:
-                targetPos = new Pos(sh.getPos().x, sh.getPos().y+1);
-                break;
-            default:
-                break;
-        }
-        // check pos valid
-        if(targetPos.x >= this.board.length || targetPos.y >= this.board[0].length || targetPos.x <0 || targetPos.y < 0){
-            io.showInfo("Error: out of playground bounds");
-            return false;
-        }
+        Pos oldPos = sh.getPos();
+        targetPos = this.checkNewPos(oldPos,md);
+        if(targetPos==null)return false;
 
         if(!this.board[targetPos.x][targetPos.y].moveIn(squad)){
             return false;

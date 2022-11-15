@@ -7,6 +7,7 @@ public class ValorGame extends Game{
     private Playground playground;
     private Squad heroSquad;
     private Squad monsterSquad;
+    private final KeyInput[] movementKeys = new KeyInput[]{KeyInput.W, KeyInput.A, KeyInput.S, KeyInput.D};
 
     public ValorGame(String configPath) {
         super(configPath, new TerminalIODriver());
@@ -25,45 +26,73 @@ public class ValorGame extends Game{
 
         io.showInfo("Initializing playground...");
         this.playground = new Playground(new ValorSpaceFactory(),new Squad[]{this.heroSquad, this.monsterSquad},io);
-
-
-//        this.shs = new SquadHolder[Constants.SQUAD_CNT];
-//        this.playerSquads = new Squad[Constants.SQUAD_CNT];
-//        int[] laneTaken = new int[]{0,0,0};
-//        int[] lanePos = new int[]{0,3,6};
-//        for(int i=0;i<Constants.SQUAD_CNT;i++){
-//            this.playerSquads[i] = new Squad(String.format("Hero-s-%d",i),new ArrayList<>(),io, new ValorHeroFightStrategy(io));
-//            HeroEntityFactory factory = new HeroEntityFactory(io);
-//            factory.fillSquad(this.playerSquads[i]);
-//            this.io.showInfo("Got heroes: \n"+this.playerSquads[i].toDetailString());
-//            List<Integer> startLanes = new ArrayList<>();
-//            for(int j=0;j<laneTaken.length;j++){
-//                if(laneTaken[j]<2){
-//                    startLanes.add(j+1);
-//                }
-//            }
-//            io.showInfo("Select this hero's starting nexus");
-//            int selection = io.getMenuSelection(startLanes,true);
-//            int laneSelection = startLanes.get(selection)-1;
-//
-//            laneTaken[laneSelection]=laneTaken[laneSelection]+1;
-//            Pos loc = new Pos(7,lanePos[laneSelection]);
-//            this.playerSquads[i].setInitialSpawnIdx(lanePos[laneSelection]);
-//            lanePos[laneSelection] = lanePos[laneSelection]+1;
-//            SquadHoldable sh = new SquadHolder(this.playerSquads[i],loc);
-//            this.shs[i] = (SquadHolder) sh;
-//        }
-//        this.playground = new Playground(new ValorSpaceFactory(),this.shs,io);
     }
 
+    private boolean gameShouldStop(){
+        boolean res = false;
+        Space[] monsterRow = playground.getSpaceByRow(0);
+        Space[] heroRow = playground.getSpaceByRow(-1);
+        String tmpl = "Game ended: %s entered %s's nexus";
+        for(Space s:monsterRow){
+            for(Entity e:s.entities){
+                if(e instanceof HeroEntity){
+                    io.showInfo(String.format(tmpl,e,"monster"));
+                    res = true;
+                }
+            }
+        }
+        for(Space s:heroRow){
+            for(Entity e:s.entities){
+                if(e instanceof MonsterEntity){
+                    io.showInfo(String.format(tmpl,e,"hero"));
+                    res = true;
+                }
+            }
+        }
+        return res;
+    }
 
     @Override
     public void start() {
         io.showInfo(playground.showBoard());
-//        while(){
-//
-//        }
-//        io.showInfo(String.format("Game ended: %s entered %s's nexus",));
+        int cnt = 0;
+        while(!gameShouldStop()){
+            // heroes make their moves\
+            io.showInfo("Round "+(++cnt));
+            io.showInfo("It's heroes' move:");
+            for(Entity ent: heroSquad.getAllEntities()){
+                io.showInfo(String.format("It's %s's turn",ent));
+                EntityAction[] ea = EntityAction.values();
+                EntityAction selection = ea[io.getMenuSelection(List.of(ea),true)];
+                switch (selection){
+                    case Move:
+                        io.showInfo("make your position move: ");
+                        KeyInput d = io.getKeyInput(movementKeys);
+                        MoveDir dir = d.toMoveDir();
+                        boolean ok = playground.handleEntityMove(dir, ent);
+                        if(!ok){
+                            io.showInfo("Error: move failed");
+                        }
+                        break;
+                    case Attack:
+                        break;
+                    case UsePotion:
+                        break;
+                    case CastSpell:
+                        break;
+                    case Equip:
+                        break;
+                    case Recall:
+                        break;
+                    case Teleport:
+                        break;
+                }
+                io.showInfo(getMap());
+            }
+
+
+            // monsters make their moves
+        }
     }
 
     public String getInfo(){

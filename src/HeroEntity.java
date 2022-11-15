@@ -2,12 +2,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class HeroEntity extends Entity implements Cloneable{
+public class HeroEntity extends Entity{
 
     private int mana;
-    private int strength;
-    private int dexterity;
-    private int agility;
+    public int strength;
+    public int dexterity;
+    public int agility;
     private int startMoney;
     private Pos initialPos;
     private Pos currentPos;

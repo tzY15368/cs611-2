@@ -78,11 +78,14 @@ public class ValorCommonSpace extends CommonSpace{
     }
 
     private void applyBuff(Entity ent, float ratio){
+        if(!(ent instanceof HeroEntity)){
+            return;
+        }
         io.showInfo(this+" Applying buff to "+ent);
         for(String attr:this.attrBuff){
             try {
                 int originalValue = (int) ent.getClass().getField(attr).get(ent);
-                float newVal = originalValue * ratio;
+                int newVal = (int) (originalValue * ratio);
                 ent.getClass().getField(attr).set(ent, newVal);
             } catch (Exception nos){
                 io.showInfo("Warning: error applying buff:"+nos);

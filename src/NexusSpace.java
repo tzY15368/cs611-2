@@ -46,6 +46,7 @@ public class NexusSpace extends Space{
             this.entities.add(ent);
             return true;
         }
+        io.showInfo("Only one entity of each class can be present in one space");
         return false;
     }
 
