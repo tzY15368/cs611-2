@@ -40,6 +40,11 @@ public class MonsterEntity extends Entity{
     }
 
     @Override
+    public char toIdentifier(){
+        return 'M';
+    }
+
+    @Override
     public List<Entity> fromConfig(List<List<String>> cfg, String namePrefix, IODriver io) {
         List<Entity> res = new ArrayList<>();
         cfg.remove(0);

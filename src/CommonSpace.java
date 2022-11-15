@@ -39,9 +39,15 @@ public class CommonSpace extends Space{
         squad.fight(monsters);
     }
 
+
     @Override
     public void moveOut(Squad squad) {
         this.squads.remove(squad);
+    }
+
+    @Override
+    public void moveOut(Entity ent) {
+
     }
 
 }

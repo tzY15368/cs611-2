@@ -41,7 +41,11 @@ public class Playground {
         for(Squad s:sparseSquads){
             for(Entity ent:s.getAllEntities()){
                 Pos p = ent.getPos();
-                this.board[p.x][p.y].moveIn(ent);
+                boolean res = this.board[p.x][p.y].moveIn(ent);
+                if(!res){
+                    io.showInfo(String.format("Move-in failed for entity %s",ent));
+                    System.exit(-1);
+                }
             }
         }
     }

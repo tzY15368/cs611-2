@@ -45,4 +45,9 @@ public class MarketSpace extends Space{
     public void moveOut(Squad squad) {
         this.squads.remove(squad);
     }
+
+    @Override
+    public void moveOut(Entity ent) {
+
+    }
 }

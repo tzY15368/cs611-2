@@ -63,6 +63,10 @@ public abstract class Entity {
 
     public abstract void handleLevelUp(int old, int newLvl);
 
+    public char toIdentifier(){
+        return 'E';
+    }
+
     public int getLevel(){
         return this.level;
     }

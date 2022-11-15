@@ -16,7 +16,18 @@ public class NexusSpace extends Space{
 
     @Override
     public String toString(){
-        return this.squads.size()!=0?"|H ":"|N ";
+        String base = "|";
+        if(this.entities.size()==0){
+            base += "NN";
+        }
+        else if(this.entities.size()==1){
+            base += "N";
+            base += this.entities.get(0).toIdentifier();
+        } else if(this.entities.size()==2){
+            base += this.entities.get(0).toIdentifier();
+            base += this.entities.get(1).toIdentifier();
+        }
+        return base;
     }
 
     @Override
@@ -27,6 +38,14 @@ public class NexusSpace extends Space{
 
     @Override
     public boolean moveIn(Entity ent) {
+        if(this.entities.size()==0){
+            this.entities.add(ent);
+            return true;
+        }
+        if(this.entities.size()==1 && this.entities.get(0).getClass()!=ent.getClass()){
+            this.entities.add(ent);
+            return true;
+        }
         return false;
     }
 
@@ -35,8 +54,14 @@ public class NexusSpace extends Space{
 
     }
 
+
     @Override
     public void moveOut(Squad squad) {
         this.squads.remove(squad);
+    }
+
+    @Override
+    public void moveOut(Entity ent) {
+        this.entities.remove(ent);
     }
 }

@@ -26,6 +26,11 @@ public class InaccessibleSpace extends Space{
     }
 
     @Override
+    public void moveOut(Entity ent) {
+
+    }
+
+    @Override
     public String toString() {
         return "|XX";
     }

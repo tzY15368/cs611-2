@@ -49,11 +49,6 @@ public class ValorCommonSpace extends CommonSpace{
 
     @Override
     public void handleEvent(Squad squad) {
-        io.showInfo(String.format("%s is in %s",squad, this.getClass().getSimpleName()));
-        // apply the attr buffs
-        applyBuff(squad, Constants.ATTR_BUFF_RATIO);
-
-        // fight?
     }
 
     @Override
@@ -64,50 +59,55 @@ public class ValorCommonSpace extends CommonSpace{
 
     @Override
     public boolean moveIn(Entity ent){
-        io.showInfo("IMPLEMENT ME!!!!!!!!!!!");
+        if(this.entities.size()==0 || (this.entities.size()==1 && this.entities.get(0).getClass()!=ent.getClass())){
+            this.entities.add(ent);
+            applyBuff(ent,Constants.ATTR_BUFF_RATIO);
+            return true;
+        }
         return false;
     }
 
     @Override
     public void moveOut(Squad squad){
-        applyBuff(squad, 1/Constants.ATTR_BUFF_RATIO);
-        super.moveOut(squad);
-    }
-
-    private void applyBuff(Squad squad, float ratio){
-        io.showInfo(this+"Applying buff...");
-        for(Entity ent : squad.listEntities()){
-            for(String attr:this.attrBuff){
-                try {
-                    int originalValue = (int) ent.getClass().getField(attr).get(ent);
-                    float newVal = originalValue * ratio;
-                    ent.getClass().getField(attr).set(ent, newVal);
-                } catch (Exception nos){
-                    io.showInfo("Warning: error applying buff:"+nos);
-                    continue;
-                }
-            }
-            if(attrBuff.size()!=0){
-                io.showInfo(String.format("%s got %fx buff on attributes %s",ent, ratio,attrBuff));
-            }
-        }
-    }
-
-    private char squadToIden(int index){
-        if(this.squads.size()<index+1){
-            return ' ';
-        }
-        Class<?> cls = squads.get(index).getEntityType();
-        if(cls.getName().toLowerCase().contains("hero")){
-            return 'H';
-        } else {
-            return 'M';
-        }
     }
 
     @Override
+    public void moveOut(Entity ent){
+        this.entities.remove(ent);
+        applyBuff(ent, 1/Constants.ATTR_BUFF_RATIO);
+    }
+
+    private void applyBuff(Entity ent, float ratio){
+        io.showInfo(this+" Applying buff to "+ent);
+        for(String attr:this.attrBuff){
+            try {
+                int originalValue = (int) ent.getClass().getField(attr).get(ent);
+                float newVal = originalValue * ratio;
+                ent.getClass().getField(attr).set(ent, newVal);
+            } catch (Exception nos){
+                io.showInfo("Warning: error applying buff:"+nos);
+                continue;
+            }
+        }
+        if(attrBuff.size()!=0){
+            io.showInfo(String.format("%s got %fx buff on attributes %s",ent, ratio,attrBuff));
+        }
+    }
+
+
     public String toString(){
-        return "|"+squadToIden(0)+squadToIden(1);
+        String base = "|";
+        if(this.entities.size()==0){
+            base += "  ";
+        }
+        else if(this.entities.size()==1){
+            base += this.entities.get(0).toIdentifier();
+            base += " ";
+        } else if(this.entities.size()==2){
+            base += this.entities.get(0).toIdentifier();
+            base += this.entities.get(1).toIdentifier();
+        }
+        return base;
     }
 
 }

@@ -4,6 +4,7 @@ import java.util.UUID;
 
 public abstract class Space {
     protected List<Squad> squads;
+    protected List<Entity> entities;
     protected IODriver io;
     protected UUID uuid;
     protected AbstractEntityFactory entityFactory;
@@ -11,6 +12,7 @@ public abstract class Space {
     public Space(IODriver io, AbstractEntityFactory entityFactory){
         this.io = io;
         this.squads = new ArrayList<>();
+        this.entities = new ArrayList<>();
         this.uuid = UUID.randomUUID();
         this.entityFactory = entityFactory;
     }
@@ -23,6 +25,10 @@ public abstract class Space {
 
     // what does it return?
     public abstract void handleEvent(Squad squad);
+//
+//    public abstract void handleEvent(Entity ent);
 
     public abstract void moveOut(Squad squad);
+
+    public abstract void moveOut(Entity ent);
 }

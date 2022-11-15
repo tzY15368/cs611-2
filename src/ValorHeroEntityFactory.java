@@ -20,12 +20,14 @@ public class ValorHeroEntityFactory extends HeroEntityFactory{
                     startLanes.add(j+1);
                 }
             }
-            ioDriver.showInfo(String.format("Select hero %s's starting nexus",ent));
+            ioDriver.showInfo(String.format("Select hero %s's starting nexus (lane)",ent));
             int selection = ioDriver.getMenuSelection(startLanes,true);
             int laneSelection = startLanes.get(selection)-1;
             laneTaken[laneSelection]=laneTaken[laneSelection]+1;
             Pos loc = new Pos(7,lanePos[laneSelection]);
+            lanePos[laneSelection] = lanePos[laneSelection]+1;
             ent.setPos(loc);
+            ioDriver.showInfo(String.format("Hero %s will start at %s",ent, loc));
         }
     }
 }

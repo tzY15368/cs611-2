@@ -30,6 +30,11 @@ public class HeroEntity extends Entity implements Cloneable{
     }
 
     @Override
+    public char toIdentifier(){
+        return 'H';
+    }
+
+    @Override
     public void handleLevelUp(int old, int newLvl) {
         float ratio = Constants.HERO_LEVELUP_MANA_RATIO;
         this.mana = (int) (this.mana * ratio);
