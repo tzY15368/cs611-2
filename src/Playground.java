@@ -20,8 +20,7 @@ public class Playground {
     private Space[][] board;
     private SquadHoldable[] squads;
     private IODriver io;
-
-
+    private Squad[] sparseSquads;
 
     // TODO: make squad factories
     public Playground(AbstractSpaceFactory spaceFactory, SquadHoldable[] squads, IODriver io){
@@ -32,6 +31,19 @@ public class Playground {
             this.board[s.getPos().x][s.getPos().y].moveIn(s.getSquad());
         }
         this.io = io;
+    }
+
+    // spareSquads don't move themselves, the entities inside MUST have valid positions
+    public Playground(AbstractSpaceFactory spaceFactory, Squad[] sparseSquads, IODriver io){
+        this.sparseSquads = sparseSquads;
+        this.io = io;
+        this.board = spaceFactory.makeSpaces(io);
+        for(Squad s:sparseSquads){
+            for(Entity ent:s.getAllEntities()){
+                Pos p = ent.getPos();
+                this.board[p.x][p.y].moveIn(ent);
+            }
+        }
     }
 
     private SquadHoldable getSquadHolder(Squad squad){
@@ -55,10 +67,12 @@ public class Playground {
         return sb.toString();
     }
 
-
+    public boolean handleEntityMove(MoveDir md, Entity ent){
+        return false;
+    }
 
     // returns true if move successful, false if not, forexample running into non-accessible spaces
-    public boolean handleMove(MoveDir md, Squad squad){
+    public boolean handleSquadMove(MoveDir md, Squad squad){
         Pos targetPos = null;
         SquadHoldable sh = this.getSquadHolder(squad);
         assert sh != null;

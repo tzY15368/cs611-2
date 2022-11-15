@@ -11,10 +11,10 @@ public class Constants {
     public static int HERO_LEVELUP_HP_RATIO = 100;
     public static float HERO_LEVELUP_MANA_RATIO = 1.1F;
 
-    public static int HERO_PARTY_SIZE_MIN = 1;
-    public static int HERO_PARTY_SIZE_MAX = 1;
+    public static int HERO_PARTY_SIZE_MIN = 3;
+    public static int HERO_PARTY_SIZE_MAX = 3;
 
     public static float ATTR_BUFF_RATIO = 1.5F;
 
-    public static int SQUAD_CNT = 3;
+    public static int[] VALOR_MONSTER_LANE = new int[]{0,3,6};
 }

@@ -51,11 +51,36 @@ public class ValorCommonSpace extends CommonSpace{
     public void handleEvent(Squad squad) {
         io.showInfo(String.format("%s is in %s",squad, this.getClass().getSimpleName()));
         // apply the attr buffs
+        applyBuff(squad, Constants.ATTR_BUFF_RATIO);
+
+        // fight?
+    }
+
+    @Override
+    public boolean moveIn(Squad squad) {
+        io.showInfo("Squads dont move");
+        return false;
+    }
+
+    @Override
+    public boolean moveIn(Entity ent){
+        io.showInfo("IMPLEMENT ME!!!!!!!!!!!");
+        return false;
+    }
+
+    @Override
+    public void moveOut(Squad squad){
+        applyBuff(squad, 1/Constants.ATTR_BUFF_RATIO);
+        super.moveOut(squad);
+    }
+
+    private void applyBuff(Squad squad, float ratio){
+        io.showInfo(this+"Applying buff...");
         for(Entity ent : squad.listEntities()){
             for(String attr:this.attrBuff){
                 try {
                     int originalValue = (int) ent.getClass().getField(attr).get(ent);
-                    float newVal = originalValue * Constants.ATTR_BUFF_RATIO;
+                    float newVal = originalValue * ratio;
                     ent.getClass().getField(attr).set(ent, newVal);
                 } catch (Exception nos){
                     io.showInfo("Warning: error applying buff:"+nos);
@@ -63,10 +88,9 @@ public class ValorCommonSpace extends CommonSpace{
                 }
             }
             if(attrBuff.size()!=0){
-                io.showInfo(String.format("%s got %fx buff on attributes %s",ent, Constants.ATTR_BUFF_RATIO,attrBuff));
+                io.showInfo(String.format("%s got %fx buff on attributes %s",ent, ratio,attrBuff));
             }
         }
-        // fight?
     }
 
     private char squadToIden(int index){

@@ -21,6 +21,7 @@ public class Squad {
     private IODriver io;
     private AbstractFightTurnStrategy fightTurnStrategy;
     private Squad currentOpponent;
+    private int initialSpawnIdx;
 
     public Squad(String name, List<Entity> entities, IODriver io, AbstractFightTurnStrategy fightTurnStrategy){
         this.name = name;
@@ -33,6 +34,11 @@ public class Squad {
     public Class<?> getEntityType(){
         return this.liveEntities.get(0).getClass();
     }
+
+    public void setInitialSpawnIdx(int idx){
+        this.initialSpawnIdx = idx;
+    }
+
 
     public int getLevel(){
         int sum = 0;
@@ -48,6 +54,13 @@ public class Squad {
 
     public List<Entity> listEntities(){
         return this.liveEntities;
+    }
+
+    public List<Entity> getAllEntities(){
+        List<Entity> res = new ArrayList<>();
+        res.addAll(this.liveEntities);
+        res.addAll(this.downEntities);
+        return res;
     }
 
     public void addEntity(Entity ent){

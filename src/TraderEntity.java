@@ -49,11 +49,6 @@ public class TraderEntity extends Entity{
     }
 
     @Override
-    public void fight(Entity ent) {
-
-    }
-
-    @Override
     public void revive() {
 
     }

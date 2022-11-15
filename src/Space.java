@@ -19,6 +19,8 @@ public abstract class Space {
 
     public abstract boolean moveIn(Squad squad);
 
+    public abstract boolean moveIn(Entity ent);
+
     // what does it return?
     public abstract void handleEvent(Squad squad);
 

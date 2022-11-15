@@ -21,9 +21,13 @@ public class NexusSpace extends Space{
 
     @Override
     public boolean moveIn(Squad squad){
-        this.squads.add(squad);
-        io.showInfo(this.getClass().getName()+": "+squad+"entered nexus");
-        return true;
+        io.showInfo("Squads don't move in this game");
+        return false;
+    }
+
+    @Override
+    public boolean moveIn(Entity ent) {
+        return false;
     }
 
     @Override

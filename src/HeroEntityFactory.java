@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HeroEntityFactory extends AbstractEntityFactory{
-    private KeyInput[] wsy = new KeyInput[]{KeyInput.Y, KeyInput.W, KeyInput.S};
 
     public HeroEntityFactory(IODriver ioDriver) {
         super(ioDriver);

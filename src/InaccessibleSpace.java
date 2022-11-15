@@ -11,6 +11,11 @@ public class InaccessibleSpace extends Space{
     }
 
     @Override
+    public boolean moveIn(Entity ent) {
+        return false;
+    }
+
+    @Override
     public void handleEvent(Squad squad) {
 
     }

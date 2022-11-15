@@ -22,6 +22,11 @@ public class CommonSpace extends Space{
     }
 
     @Override
+    public boolean moveIn(Entity ent) {
+        return false;
+    }
+
+    @Override
     public void handleEvent(Squad squad) {
         io.showInfo("You are in common space");
         this.monsters = this.entityFactory.fillWithSquad(squad);

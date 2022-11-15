@@ -9,6 +9,8 @@ public class HeroEntity extends Entity implements Cloneable{
     private int dexterity;
     private int agility;
     private int startMoney;
+    private Pos initialPos;
+    private Pos currentPos;
 
     public static int getInitialHP(int level){
         return (int) (1.5 * level);

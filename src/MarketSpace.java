@@ -23,6 +23,10 @@ public class MarketSpace extends Space{
         return true;
     }
 
+    @Override
+    public boolean moveIn(Entity ent) {
+        return false;
+    }
 
 
     @Override

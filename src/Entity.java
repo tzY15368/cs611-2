@@ -7,7 +7,10 @@ enum EntityAction{
     Attack,
     CastSpell,
     UsePotion,
-    Equip
+    Equip, // change weapon or armor
+    Move,
+    Teleport,
+    Recall
 }
 
 public abstract class Entity {
@@ -19,6 +22,7 @@ public abstract class Entity {
     protected IODriver io;
     protected AbstractFightStrategy strategy;
     protected int experience;
+    private Pos pos;
 
     public Entity(String name, int HP, int level, AbstractInventoryFactory inventoryFactory, IODriver io, AbstractFightStrategy strat){
         this.uuid = UUID.randomUUID();
@@ -29,6 +33,14 @@ public abstract class Entity {
         this.io = io;
         this.strategy = strat;
         this.experience = level * Constants.HERO_EXP_PER_LVL;
+    }
+
+    public Pos getPos() {
+        return pos;
+    }
+
+    public void setPos(Pos p){
+        this.pos = p;
     }
 
     public boolean isDead(){
@@ -141,10 +153,6 @@ public abstract class Entity {
         ent.handleDamage(dmg);
     }
 
-    public void doFight(Entity ent){
-        io.showInfo(String.format("EntityFight: %s is fighting %s",this, ent));
-        this.fight(ent);
-    }
     public abstract void handleSpellUse(SpellItem spell, Entity ent);
     public abstract void handleSpellEffect(SpellItem spell);
 
@@ -189,8 +197,11 @@ public abstract class Entity {
         io.showInfo(String.format("%s used %s and gained %d in %s", this,
                 targetPotion, targetPotion.getAttrIncrease(), Arrays.toString(targetPotion.getAttrAffected())));
     }
-
-    public void fight(Entity ent){
+    public void doFight(Entity ent){
+        io.showInfo(String.format("EntityFight: %s is fighting %s",this, ent));
+        this.fight(ent);
+    }
+    private void fight(Entity ent){
         io.showInfo(this+"'s move:");
         EntityAction ea = strategy.useStrategy(this);
         switch (ea){

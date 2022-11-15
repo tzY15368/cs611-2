@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Supplier;
 
 
@@ -41,7 +40,7 @@ public class HeroMonsterGame extends Game{
         while(true){
             for(SquadHolder sh: shs){
                 KeyInput ki = io.getKeyInput(movementKeys);
-                playground.handleMove(ki.toMoveDir(),sh.getSquad());
+                playground.handleSquadMove(ki.toMoveDir(),sh.getSquad());
                 io.showInfo(playground.showBoard());
 
             }
