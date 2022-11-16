@@ -72,6 +72,10 @@ public class ValorGame extends Game{
             for(Entity ent: monsterSquad.getAllEntities()){
                 ent.takeAction();
             }
+            if(cnt%Constants.MONSTER_SPAWN_INTERVAL==Constants.MONSTER_SPAWN_INTERVAL-1){
+                monsterSquad.spawnNewEntities();
+                io.showInfo("Spawned new monsters");
+            }
             io.showInfo(getMap());
             io.showInfo("Round over");
             io.showInfo("=================================");

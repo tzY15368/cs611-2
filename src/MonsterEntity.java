@@ -16,7 +16,8 @@ public class MonsterEntity extends Entity{
     }
 
     public MonsterEntity(String name, int level, int defense, int damage, int dodge, String namePrefix, IODriver io) {
-        super(namePrefix + name, MonsterEntity.getInitialHP(level), level, new MonsterInventoryFactory(),io, new MonsterActionStrategy(io));
+        super(namePrefix + name, MonsterEntity.getInitialHP(level), level, new MonsterInventoryFactory(),io,
+                new MonsterActionStrategy(io), new MonsterOpponentOptStrategy(io));
         this.defense = defense;
         this.damage = damage;
         this.dodge = dodge;

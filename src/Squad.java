@@ -94,6 +94,21 @@ public class Squad {
         return this.liveEntities.size() == 0;
     }
 
+    public void spawnNewEntities(){
+        for(Entity ent:getAllEntities()){
+            Entity newEnt = ent.cloneByLevel(ent.level);
+            Pos nex = ent.getInitialPos();
+            Space dst = Playground.getInstance().getSpaceByPos(nex);
+            boolean ok = dst.moveIn(newEnt);
+            if(ok){
+                 newEnt.setPos(nex);
+                 liveEntities.add(newEnt);
+            } else {
+                break;
+            }
+        }
+    }
+
     private void fightInPairs(Squad s1, Squad s2){
         Iterator<Pair> pairs = s1.fightTurnStrategy.useStrategy(s1, s2);
         while(pairs.hasNext()){

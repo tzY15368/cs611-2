@@ -4,7 +4,11 @@ public class MonsterActionStrategy extends AbstractActionStrategy {
     }
 
     @Override
-    public EntityAction useStrategy() {
+    public EntityAction useStrategy(Entity self) {
+        Entity ent = self.findOpponent();
+        if(ent==null){
+            return EntityAction.Move;
+        }
         return EntityAction.Attack;
     }
 }

@@ -28,6 +28,11 @@ public abstract class Space {
 //
 //    public abstract void handleEvent(Entity ent);
 
+
+    public List<Entity> getEntities() {
+        return entities;
+    }
+
     public abstract void moveOut(Squad squad);
 
     public abstract void moveOut(Entity ent);

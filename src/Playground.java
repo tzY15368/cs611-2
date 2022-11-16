@@ -123,6 +123,14 @@ public class Playground {
         return res;
     }
 
+    public int getShapeX(){
+        return board.length;
+    }
+
+    public int getShapeY(){
+        return board[0].length;
+    }
+
     public boolean handleEntityTeleport(Pos pos, Entity ent){
         Pos oldPos = ent.getPos();
         Space oldSpace = getSpaceByPos(oldPos);
@@ -134,6 +142,8 @@ public class Playground {
             return false;
         }
         oldSpace.moveOut(ent);
+        ent.setPos(pos);
+        io.showInfo("Playground: Entity"+String.format("%s teleported to %s",ent, pos));
         return true;
     }
 

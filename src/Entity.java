@@ -24,7 +24,9 @@ public abstract class Entity {
     protected int experience;
     private Pos pos;
     private Pos initialPos;
+    private Squad squad;
     private final KeyInput[] movementKeys = new KeyInput[]{KeyInput.W, KeyInput.A, KeyInput.S, KeyInput.D};
+    private AbstractOpponentOptStrategy opponentOptStrategy;
 
     public Entity(String name, int HP, int level, AbstractInventoryFactory inventoryFactory, IODriver io, AbstractActionStrategy strat){
         this.uuid = UUID.randomUUID();
@@ -37,6 +39,12 @@ public abstract class Entity {
         this.experience = level * Constants.HERO_EXP_PER_LVL;
     }
 
+    public Entity(String name, int HP, int level, AbstractInventoryFactory inventoryFactory,
+                  IODriver io, AbstractActionStrategy strat, AbstractOpponentOptStrategy opt){
+        this(name,HP, level,inventoryFactory,io,strat);
+        opponentOptStrategy = opt;
+    }
+
     public Pos getPos() {
         return pos;
     }
@@ -46,6 +54,14 @@ public abstract class Entity {
         if(initialPos==null){
             initialPos = p;
         }
+    }
+
+    public Squad getSquad(){
+        return squad;
+    }
+
+    public void setSquad(Squad squad){
+        this.squad = squad;
     }
 
     public Pos getInitialPos(){
@@ -101,6 +117,9 @@ public abstract class Entity {
     }
 
     public void trade(Entity ent){
+        io.showInfo("%s will trade with %s, Y to proceed, N to abort");
+        KeyInput i = io.getKeyInput(new KeyInput[]{KeyInput.Y,KeyInput.N});
+        if(i==KeyInput.N)return;
         Inventory targetInventory = ent.getInventory();
         io.showInfo(String.format("%s trading with %s", this.getName(), ent.getName()));
         io.showInfo("Buy phase:");
@@ -216,7 +235,7 @@ public abstract class Entity {
     }
     private void fight(Entity ent){
         io.showInfo(this+"'s move:");
-        EntityAction ea = strategy.useStrategy();
+        EntityAction ea = strategy.useStrategy(this);
         switch (ea){
             case Equip:
                 this.inventory.replaceActiveItem();
@@ -233,12 +252,12 @@ public abstract class Entity {
         }
     }
 
-    private Entity findOpponent(){
-        return null;
+    public Entity findOpponent(){
+        return this.opponentOptStrategy.getOpponent(this);
     }
 
     public void takeAction(){
-        EntityAction selection = this.strategy.useStrategy();
+        EntityAction selection = this.strategy.useStrategy(this);
         switch (selection){
             case Move:
                 KeyInput d = io.getKeyInput(movementKeys);
@@ -280,6 +299,17 @@ public abstract class Entity {
     };
 
     private void handleTeleport(){
+
+        List<Pos> possiblePos = new ArrayList<>();
+        List<Entity> peers = this.getSquad().getAllEntities();
+        for(Entity peer:peers){
+            if(peers==this)continue;
+            if(Math.abs(peer.getPos().x-this.getPos().x)<=1){
+                continue;
+            }
+
+        }
+
         KeyInput[] validKeys = Arrays.copyOf(movementKeys,6);
         validKeys[4] = KeyInput.Y;
         validKeys[5] = KeyInput.N;

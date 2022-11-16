@@ -33,6 +33,7 @@ public class HeroEntityFactory extends AbstractEntityFactory{
             newEntities.add(EntityManager.listHeroes().get(selection).cloneByLevel(0));
         }
         for(Entity ent : newEntities){
+            ent.setSquad(squad);
             squad.addEntity(ent);
         }
     }

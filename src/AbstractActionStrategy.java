@@ -6,5 +6,5 @@ public abstract class AbstractActionStrategy {
 
     protected IODriver io;
 
-    public abstract EntityAction useStrategy();
+    public abstract EntityAction useStrategy(Entity self);
 }

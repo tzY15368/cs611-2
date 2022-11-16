@@ -5,7 +5,7 @@ public class TraderEntity extends Entity{
 
     public TraderEntity(String name, IODriver io) {
 
-        super(name, 0,0, new TraderInventoryFactory(),io, new TraderFightStrategy(io));
+        super(name, 0,0, new TraderInventoryFactory(),io, null);
     }
 
     @Override
