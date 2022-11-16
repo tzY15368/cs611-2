@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.UUID;
 
 enum EntityAction{
+    Move,
     Attack,
     CastSpell,
     UsePotion,
     Equip, // change weapon or armor
-    Move,
     Teleport,
     Recall
 }
@@ -20,11 +20,13 @@ public abstract class Entity {
     protected UUID uuid;
     protected Inventory inventory;
     protected IODriver io;
-    protected AbstractFightStrategy strategy;
+    protected AbstractActionStrategy strategy;
     protected int experience;
     private Pos pos;
+    private Pos initialPos;
+    private final KeyInput[] movementKeys = new KeyInput[]{KeyInput.W, KeyInput.A, KeyInput.S, KeyInput.D};
 
-    public Entity(String name, int HP, int level, AbstractInventoryFactory inventoryFactory, IODriver io, AbstractFightStrategy strat){
+    public Entity(String name, int HP, int level, AbstractInventoryFactory inventoryFactory, IODriver io, AbstractActionStrategy strat){
         this.uuid = UUID.randomUUID();
         this.name = name;
         this.HP = HP;
@@ -41,6 +43,13 @@ public abstract class Entity {
 
     public void setPos(Pos p){
         this.pos = p;
+        if(initialPos==null){
+            initialPos = p;
+        }
+    }
+
+    public Pos getInitialPos(){
+        return initialPos;
     }
 
     public boolean isDead(){
@@ -207,7 +216,7 @@ public abstract class Entity {
     }
     private void fight(Entity ent){
         io.showInfo(this+"'s move:");
-        EntityAction ea = strategy.useStrategy(this);
+        EntityAction ea = strategy.useStrategy();
         switch (ea){
             case Equip:
                 this.inventory.replaceActiveItem();
@@ -221,6 +230,93 @@ public abstract class Entity {
             case UsePotion:
                 this.usePotion();
                 break;
+        }
+    }
+
+    private Entity findOpponent(){
+        return null;
+    }
+
+    public void takeAction(){
+        EntityAction selection = this.strategy.useStrategy();
+        switch (selection){
+            case Move:
+                KeyInput d = io.getKeyInput(movementKeys);
+                MoveDir dir = d.toMoveDir();
+                boolean ok = Playground.getInstance().handleEntityMove(dir, this);
+                if(!ok){
+                    io.showInfo("Error: move failed");
+                }
+                break;
+            case Attack:
+                Entity opponent = findOpponent();
+                if(opponent==null){
+                    io.showInfo("Error: no valid opponent");
+                    break;
+                }
+                useDamage(opponent);
+                break;
+            case UsePotion:
+                usePotion();
+                break;
+            case CastSpell:
+                Entity dst = findOpponent();
+                if(dst==null){
+                    io.showInfo("Error: no valid opponent");
+                    break;
+                }
+                useSpell(dst);
+                break;
+            case Equip:
+                inventory.replaceActiveItem();
+                break;
+            case Recall:
+                handleRecall();
+                break;
+            case Teleport:
+                handleTeleport();
+                break;
+        }
+    };
+
+    private void handleTeleport(){
+        KeyInput[] validKeys = Arrays.copyOf(movementKeys,6);
+        validKeys[4] = KeyInput.Y;
+        validKeys[5] = KeyInput.N;
+        KeyInput selection = null;
+        Pos currentPos = new Pos(0,0);
+        io.showInfo("Current pos:"+currentPos);
+        while(selection!=KeyInput.N && selection!=KeyInput.Y){
+            selection = io.getKeyInput(validKeys);
+            switch (selection){
+                case W:
+                    currentPos.x -= 1;
+                case A:
+                    currentPos.y -= 1;
+                case S:
+                    currentPos.x += 1;
+                case D:
+                    currentPos.y += 1;
+            }
+        }
+        if(selection==KeyInput.N){
+            io.showInfo("Teleport aborted");
+            return;
+        }
+        boolean ok = Playground.getInstance().handleEntityTeleport(currentPos,this);
+        if(ok){
+            io.showInfo(String.format("%s teleported to %s",this,currentPos));
+        } else {
+            io.showInfo("teleport failed");
+        }
+    }
+
+    private void handleRecall(){
+        boolean ok = Playground.getInstance().handleEntityTeleport(this.getInitialPos(),this);
+        if(ok){
+            io.showInfo(String.format("%s recalled back to %s",this, this.getInitialPos()));
+        }else{
+            io.showInfo("recall failed");
         }
     }
 

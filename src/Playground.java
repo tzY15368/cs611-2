@@ -113,6 +113,30 @@ public class Playground {
         return targetPos;
     }
 
+    public Space getSpaceByPos(Pos pos){
+        Space res = null;
+        try{
+            res = board[pos.x][pos.y];
+        } catch (Exception e){
+            io.showInfo("Error: invalid pos"+pos);
+        }
+        return res;
+    }
+
+    public boolean handleEntityTeleport(Pos pos, Entity ent){
+        Pos oldPos = ent.getPos();
+        Space oldSpace = getSpaceByPos(oldPos);
+        if(oldSpace==null){
+            return false;
+        }
+        Space newSpace = getSpaceByPos(pos);
+        if(!newSpace.moveIn(ent)){
+            return false;
+        }
+        oldSpace.moveOut(ent);
+        return true;
+    }
+
     public boolean handleEntityMove(MoveDir md, Entity ent){
         Pos oldPos = ent.getPos();
         Pos newPos = this.checkNewPos(oldPos,md);

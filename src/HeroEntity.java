@@ -21,7 +21,7 @@ public class HeroEntity extends Entity{
     }
 
     public HeroEntity(String name, int level, int mana, int strength, int dexterity, int agility, int startMoney, String namePrefix,IODriver io) {
-        super(namePrefix+"-"+name, HeroEntity.getInitialHP(level), level, new HeroInventoryFactory(startMoney),io, new HeroFightStrategy(io));
+        super(namePrefix+"-"+name, HeroEntity.getInitialHP(level), level, new HeroInventoryFactory(startMoney),io, new HeroActionStrategy(io));
         this.mana = mana;
         this.startMoney = startMoney;
         this.strength = strength;
@@ -147,6 +147,10 @@ public class HeroEntity extends Entity{
                     break;
             }
         }
+    }
+
+    @Override
+    public void takeAction() {
     }
 
     @Override
