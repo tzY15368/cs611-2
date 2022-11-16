@@ -30,8 +30,8 @@ public class HeroMonsterGame extends Game{
                 new SquadHolder(squad, new Pos(0,0)),
         };
         this.shs = (SquadHolder[]) sh;
-
-        this.playground = new Playground(new HeroMonsterSpaceFactory(), sh, io);
+        Playground.initInstance(new HeroMonsterSpaceFactory(),sh,io);
+        this.playground = Playground.getInstance();
     }
     @Override
     public void start() {

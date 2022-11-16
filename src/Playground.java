@@ -16,13 +16,27 @@ interface SquadHoldable {
 }
 
 public class Playground {
+    private static Playground instance;
+
     private Space[][] board;
     private SquadHoldable[] squads;
     private IODriver io;
     private Squad[] sparseSquads;
 
+    public static void initInstance(AbstractSpaceFactory spaceFactory, SquadHoldable[] squads, IODriver io){
+        instance = new Playground(spaceFactory, squads, io);
+    }
+
+    public static void initInstance(AbstractSpaceFactory spaceFactory, Squad[] sparseSquads, IODriver io){
+        instance = new Playground(spaceFactory,sparseSquads,io);
+    }
+
+    public static Playground getInstance(){
+        return instance;
+    }
+
     // TODO: make squad factories
-    public Playground(AbstractSpaceFactory spaceFactory, SquadHoldable[] squads, IODriver io){
+    private Playground(AbstractSpaceFactory spaceFactory, SquadHoldable[] squads, IODriver io){
         this.board = spaceFactory.makeSpaces(io);
         this.squads = squads;
         for(SquadHoldable s: this.squads){
@@ -33,7 +47,7 @@ public class Playground {
     }
 
     // spareSquads don't move themselves, the entities inside MUST have valid positions
-    public Playground(AbstractSpaceFactory spaceFactory, Squad[] sparseSquads, IODriver io){
+    private Playground(AbstractSpaceFactory spaceFactory, Squad[] sparseSquads, IODriver io){
         this.sparseSquads = sparseSquads;
         this.io = io;
         this.board = spaceFactory.makeSpaces(io);

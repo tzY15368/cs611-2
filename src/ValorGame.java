@@ -25,7 +25,8 @@ public class ValorGame extends Game{
         this.monsterSquad = monsterFactory.fillWithSquad(this.heroSquad);
 
         io.showInfo("Initializing playground...");
-        this.playground = new Playground(new ValorSpaceFactory(),new Squad[]{this.heroSquad, this.monsterSquad},io);
+        Playground.initInstance(new ValorSpaceFactory(),new Squad[]{this.heroSquad, this.monsterSquad},io);
+        this.playground = Playground.getInstance();
     }
 
     private boolean gameShouldStop(){
@@ -61,38 +62,91 @@ public class ValorGame extends Game{
             io.showInfo("Round "+(++cnt));
             io.showInfo("It's heroes' move:");
             for(Entity ent: heroSquad.getAllEntities()){
+                // if dead?
                 io.showInfo(String.format("It's %s's turn",ent));
-                EntityAction[] ea = EntityAction.values();
-                EntityAction selection = ea[io.getMenuSelection(List.of(ea),true)];
+                EntityAction selection = ent.strategy.useStrategy();
                 switch (selection){
                     case Move:
-                        io.showInfo("make your position move: ");
-                        KeyInput d = io.getKeyInput(movementKeys);
-                        MoveDir dir = d.toMoveDir();
-                        boolean ok = playground.handleEntityMove(dir, ent);
-                        if(!ok){
-                            io.showInfo("Error: move failed");
-                        }
+                        handleMove(ent);
                         break;
                     case Attack:
+                        handleAttack(ent);
                         break;
                     case UsePotion:
+                        handleUsePotion(ent);
                         break;
                     case CastSpell:
+                        handleCastSpell(ent);
                         break;
                     case Equip:
+                        handleEquip(ent);
                         break;
                     case Recall:
+                        handleRecall(ent);
                         break;
                     case Teleport:
+                        handleTeleport(ent);
                         break;
                 }
                 io.showInfo(getMap());
             }
 
-
             // monsters make their moves
+            io.showInfo("It's monsters' move");
+            for(Entity ent: monsterSquad.getAllEntities()){
+                // if dead?
+                EntityAction act = ent.strategy.useStrategy();
+                switch (act){
+                    case Move:
+                        MoveDir down = MoveDir.Down;
+                        playground.handleEntityMove(down,ent);
+                        break;
+                    case Attack:
+                        handleAttack(ent);
+                        break;
+                    default:
+                        io.showInfo("Error: invalid action");
+
+                }
+            }
+
+            io.showInfo("Round over");
+            io.showInfo("=================================");
         }
+    }
+
+    private void handleMove(Entity ent){
+        io.showInfo("make your position move: ");
+        KeyInput d = io.getKeyInput(movementKeys);
+        MoveDir dir = d.toMoveDir();
+        boolean ok = playground.handleEntityMove(dir, ent);
+        if(!ok){
+            io.showInfo("Error: move failed");
+        }
+    }
+
+    private void handleAttack(Entity ent){
+
+    }
+
+    private void handleUsePotion(Entity ent){
+
+    }
+
+    public void handleCastSpell(Entity ent){
+
+    }
+
+    public void handleEquip(Entity ent){
+
+    }
+
+    public void handleRecall(Entity ent){
+
+    }
+
+    public void handleTeleport(Entity ent){
+
     }
 
     public String getInfo(){
