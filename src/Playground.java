@@ -124,8 +124,10 @@ public class Playground {
         Space res = null;
         try{
             res = board[pos.x][pos.y];
+        } catch (ArrayIndexOutOfBoundsException a){
+
         } catch (Exception e){
-            io.showInfo("Error: invalid pos"+pos);
+            io.showInfo("Other Error: "+pos+":"+e);
         }
         return res;
     }

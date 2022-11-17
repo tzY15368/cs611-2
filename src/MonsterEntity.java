@@ -28,6 +28,11 @@ public class MonsterEntity extends Entity{
 
     }
 
+    @Override
+    protected MoveDir getMoveInput(){
+        return MoveDir.Down;
+    }
+
     public MonsterEntity cloneByLevel(int targetLevel){
         MonsterEntity ent = new MonsterEntity(this.name, this.level, this.defense,
                 this.damage, this.dodge, "", this.io);

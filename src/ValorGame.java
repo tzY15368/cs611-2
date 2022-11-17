@@ -70,6 +70,7 @@ public class ValorGame extends Game{
             // monsters make their moves
             io.showInfo("It's monsters' move");
             for(Entity ent: monsterSquad.getAllEntities()){
+                io.showInfo(String.format("It's %s's turn",ent));
                 ent.takeAction();
             }
             if(cnt%Constants.MONSTER_SPAWN_INTERVAL==Constants.MONSTER_SPAWN_INTERVAL-1){

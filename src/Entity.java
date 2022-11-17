@@ -122,7 +122,7 @@ public abstract class Entity {
     }
 
     public void trade(Entity ent){
-        io.showInfo("%s will trade with %s, Y to proceed, N to abort");
+        io.showInfo(String.format("%s will trade with %s, Y to proceed, N to abort",this, ent));
         KeyInput i = io.getKeyInput(new KeyInput[]{KeyInput.Y,KeyInput.N});
         if(i==KeyInput.N)return;
         Inventory targetInventory = ent.getInventory();
@@ -179,6 +179,16 @@ public abstract class Entity {
         int delta = getActualDamage(damage);
         io.showInfo(String.format("%s actually took %d damage", this, delta));
         this.HP -= delta;
+        if(this.HP <= 0){
+            io.showInfo(String.format("%s died, returning to nexus"));
+            Playground.getInstance().getSpaceByPos(this.getPos()).moveOut(this);
+            if(Playground.getInstance().getSpaceByPos(this.getInitialPos()).moveIn(this)){
+                this.HP = (int) (this.level * Constants.MONSTER_LVL_EXP_RATIO);
+                this.setPos(this.getInitialPos());
+            } else {
+                io.showInfo("Revive failed, "+this+" is out");
+            }
+        }
     };
 
     // returns actual damage
@@ -258,15 +268,22 @@ public abstract class Entity {
     }
 
     public Entity findOpponent(){
+        io.showInfo(String.format("Using find opponent strategy: %s",opponentOptStrategy));
         return this.opponentOptStrategy.getOpponent(this);
     }
 
+    protected MoveDir getMoveInput(){
+        KeyInput d = io.getKeyInput(movementKeys);
+        MoveDir dir = d.toMoveDir();
+        return dir;
+    }
+
     public void takeAction(){
+        io.showInfo("using strategy:"+this.strategy);
         EntityAction selection = this.strategy.useStrategy(this);
         switch (selection){
             case Move:
-                KeyInput d = io.getKeyInput(movementKeys);
-                MoveDir dir = d.toMoveDir();
+                MoveDir dir = getMoveInput();
                 boolean ok = Playground.getInstance().handleEntityMove(dir, this);
                 if(!ok){
                     io.showInfo("Error: move failed");
@@ -304,7 +321,7 @@ public abstract class Entity {
     };
 
     public boolean checkSpaceConflict(Space s){
-        if(s.getEntities().size()==0)continue;
+        if(s.getEntities().size()==0)return true;
         Entity one = s.getEntities().get(0);
         for(int j=1;j<s.getEntities().size();j++){
             if(one.getSquad()!=s.getEntities().get(j).getSquad()){

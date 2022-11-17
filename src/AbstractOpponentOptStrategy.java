@@ -23,7 +23,11 @@ public abstract class AbstractOpponentOptStrategy {
             for(Pos dir : dirs){
                 try{
                     List<Entity> entities = Playground.getInstance().getSpaceByPos(dir).getEntities();
-                    res.addAll(entities);
+                    for(Entity e: entities){
+                        if(e.getSquad()!=self.getSquad()){
+                            res.add(e);
+                        }
+                    }
                 } catch (Exception e){
                     continue;
                 }

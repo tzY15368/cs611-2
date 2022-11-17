@@ -40,7 +40,9 @@ public class NexusSpace extends Space{
     public boolean moveIn(Entity ent) {
         if(this.entities.size()==0 || (this.entities.size()==1 && this.entities.get(0).getClass()!=ent.getClass())){
             this.entities.add(ent);
-            ent.trade(this.merchant);
+            if(ent instanceof HeroEntity){
+                ent.trade(this.merchant);
+            }
             return true;
         }
         io.showInfo("Only one entity of each class can be present in one space");
