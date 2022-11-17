@@ -35,6 +35,7 @@ public class HeroEntityFactory extends AbstractEntityFactory{
         for(Entity ent : newEntities){
             ent.setSquad(squad);
             squad.addEntity(ent);
+            ent.setMoveDir(MoveDir.Up);
         }
     }
 }

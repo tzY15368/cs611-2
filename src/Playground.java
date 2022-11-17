@@ -88,6 +88,13 @@ public class Playground {
         return this.board[(rowIndex+this.board.length) % this.board.length];
     }
 
+    public boolean checkPosValidity(Pos targetPos){
+        if(targetPos.x >= this.board.length || targetPos.y >= this.board[0].length || targetPos.x <0 || targetPos.y < 0){
+            return false;
+        }
+        return true;
+    }
+
     public Pos checkNewPos(Pos oldPos, MoveDir md){
         Pos targetPos = null;
         switch (md) {
@@ -106,7 +113,7 @@ public class Playground {
             default:
                 break;
         }
-        if(targetPos.x >= this.board.length || targetPos.y >= this.board[0].length || targetPos.x <0 || targetPos.y < 0){
+        if(!checkPosValidity(targetPos)){
             io.showInfo("Error: out of playground bounds");
             return null;
         }
@@ -151,7 +158,12 @@ public class Playground {
         Pos oldPos = ent.getPos();
         Pos newPos = this.checkNewPos(oldPos,md);
         if(newPos==null)return false;
-        if(!board[newPos.x][newPos.y].moveIn(ent)){
+        Space newSpace = board[newPos.x][newPos.y];
+        if(!ent.checkSpaceConflict(newSpace)){
+            io.showInfo("Error: invalid move");
+            return false;
+        }
+        if(!newSpace.moveIn(ent)){
             return false;
         }
         board[oldPos.x][oldPos.y].moveOut(ent);

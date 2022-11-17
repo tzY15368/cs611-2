@@ -25,6 +25,7 @@ public class MonsterEntityFactory extends AbstractEntityFactory{
             // TODO: MAKE MONSTERS
             Entity monster = monsters.get(r.nextInt(monsters.size()));
             monster.setSquad(monsterSquad);
+            monster.setMoveDir(MoveDir.Down);
             monsterList.add(monster.cloneByLevel(monsterLevel));
         }
         return monsterSquad;

@@ -25,6 +25,7 @@ public abstract class Entity {
     private Pos pos;
     private Pos initialPos;
     private Squad squad;
+    private MoveDir moveDirLimit;
     private final KeyInput[] movementKeys = new KeyInput[]{KeyInput.W, KeyInput.A, KeyInput.S, KeyInput.D};
     private AbstractOpponentOptStrategy opponentOptStrategy;
 
@@ -43,6 +44,10 @@ public abstract class Entity {
                   IODriver io, AbstractActionStrategy strat, AbstractOpponentOptStrategy opt){
         this(name,HP, level,inventoryFactory,io,strat);
         opponentOptStrategy = opt;
+    }
+
+    public void setMoveDir(MoveDir md){
+        this.moveDirLimit = md;
     }
 
     public Pos getPos() {
@@ -298,44 +303,69 @@ public abstract class Entity {
         }
     };
 
+    public boolean checkSpaceConflict(Space s){
+        if(s.getEntities().size()==0)continue;
+        Entity one = s.getEntities().get(0);
+        for(int j=1;j<s.getEntities().size();j++){
+            if(one.getSquad()!=s.getEntities().get(j).getSquad()){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isValidMoveDst(Pos pos){
+        int posx = pos.x;
+        if(moveDirLimit==MoveDir.Up){
+            for(int i=posx;i>=0;i++){
+                Pos np = new Pos(i,pos.y);
+                Space s = Playground.getInstance().getSpaceByPos(np);
+                if(!checkSpaceConflict(s))return false;
+            }
+        } else {
+            for(int i=posx;i<Constants.PLAYGROUND_X;i++){
+                Pos np = new Pos(i, pos.y);
+                Space s = Playground.getInstance().getSpaceByPos(np);
+                if(!checkSpaceConflict(s))return false;
+            }
+        }
+        return true;
+    }
+
     private void handleTeleport(){
 
         List<Pos> possiblePos = new ArrayList<>();
         List<Entity> peers = this.getSquad().getAllEntities();
         for(Entity peer:peers){
-            if(peers==this)continue;
+            if(peer==this)continue;
             if(Math.abs(peer.getPos().x-this.getPos().x)<=1){
                 continue;
             }
-
-        }
-
-        KeyInput[] validKeys = Arrays.copyOf(movementKeys,6);
-        validKeys[4] = KeyInput.Y;
-        validKeys[5] = KeyInput.N;
-        KeyInput selection = null;
-        Pos currentPos = new Pos(0,0);
-        io.showInfo("Current pos:"+currentPos);
-        while(selection!=KeyInput.N && selection!=KeyInput.Y){
-            selection = io.getKeyInput(validKeys);
-            switch (selection){
-                case W:
-                    currentPos.x -= 1;
-                case A:
-                    currentPos.y -= 1;
-                case S:
-                    currentPos.x += 1;
-                case D:
-                    currentPos.y += 1;
+            Pos peerPos = peer.getPos();
+            List<Pos> positions = new ArrayList<>();
+            Space left = Playground.getInstance().getSpaceByPos(
+                new Pos(peerPos.x, peerPos.y - 1)
+                );
+            Pos parallel = new Pos(
+                peerPos.x, 
+                peerPos.y + ((left==null||left instanceof InaccessibleSpace)?1:-1)
+            );
+            possiblePos.add(parallel);
+            Pos up = new Pos(peerPos.x-1,peerPos.y);
+            if(isValidMoveDst(up)){
+                possiblePos.add(up);
+            }
+            Pos down = new Pos(peerPos.x+1, peerPos.y);
+            if(isValidMoveDst(down)){
+                possiblePos.add(down);
             }
         }
-        if(selection==KeyInput.N){
-            io.showInfo("Teleport aborted");
-            return;
-        }
-        boolean ok = Playground.getInstance().handleEntityTeleport(currentPos,this);
+        io.showInfo("select teleport destination:");
+        int selection = io.getMenuSelection(peers, true);
+        Pos dst = possiblePos.get(selection);
+        boolean ok = Playground.getInstance().handleEntityTeleport(dst, this);
         if(ok){
-            io.showInfo(String.format("%s teleported to %s",this,currentPos));
+            io.showInfo(String.format("%s teleported to %s",this,dst));
         } else {
             io.showInfo("teleport failed");
         }
