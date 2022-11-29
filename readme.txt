@@ -1,7 +1,7 @@
 @@ -0,0 +1,88 @@
-# CS611-Assignment 3
+# CS611-Assignment 4
 
-## Generic Board Game
+## Valor
 
 ----
 Tingzhou Yuan
@@ -11,6 +11,15 @@ tzyuan15@bu.edu
 U79759599
 
 ----
+
+## Changes from the previous Assignment3 infra
+
+New Space types are added(Nexus space and Valor common space), new methods are added to the general space class to support
+entity teleporting. The way each space is displayed is also changed to support more than one entity in one slot.
+Playground class is made a singleton as it's only created once in the game and this also makes it easy to access.
+New strategies are added for monsters.
+The Attack is moved into EntityAction so that players must now pick one single move.
+The game driver class ValorGame is changed to support new game rules.
 
 ## How to compile and run
 
